@@ -1,0 +1,370 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "The purpose of this application is to generate payload for printers\n\nSwagger json genereated using https://goswagger.io/generate/spec.html\nswagger generate spec -m -o swagger.json",
+    "title": "Rockspoon Print Microservice",
+    "version": "0.0.1"
+  },
+  "host": "localhost:6002",
+  "basePath": "/",
+  "paths": {
+    "/print/delivery-takeout/{id}/receipt": {
+      "get": {
+        "description": "this endpoint returns a delivery and takeout receipt payload",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printDeliveryTakeoutReceipt",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "dinning party id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printDeliveryTakeoutReceipt response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/kitchen-order": {
+      "get": {
+        "description": "this endpoint returns a kitchen order ticket",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printKitchenOrder",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "preparation station's name",
+            "name": "stationName",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "serialized items ids [string1,string2,string3]",
+            "name": "itemsFiredIds",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printKitchenOrder response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/payment-invoice": {
+      "get": {
+        "description": "this endpoint returns a payment invoice payload by payment id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printPaymentInvoice",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "payment id",
+            "name": "userPaymentId",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printPaymentInvoice response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/qsr/{id}/receipt": {
+      "get": {
+        "description": "this endpoint returns a qsr receipt payload",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printQSRReceipt",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "dinning party id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printQSRReceipt response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/sales-summary-report": {
+      "get": {
+        "description": "this endpoint returns a a sales summary report payload",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printSalesSummaryReport",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "start date",
+            "name": "startDate",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "end date",
+            "name": "endDate",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printSalesSummaryReport response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/table-bill": {
+      "get": {
+        "description": "this endpoint returns a table's bill payload",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printTableBill",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "dinning party id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printTableBill response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/test": {
+      "get": {
+        "description": "this endpoint returns a test payload",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printTest",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "printer id",
+            "name": "deviceId",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "flag for first time setup",
+            "name": "firstSetup",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printTest response",
+            "schema": {
+              "$ref": "#/definitions/Payload"
+            }
+          }
+        }
+      }
+    },
+    "/print/venue/{id}/pos-printers": {
+      "get": {
+        "description": "this endpoint returns a printer's information for a venue",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Print"
+        ],
+        "operationId": "printVenuePrinters",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "venue id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "printQSRReceipt response",
+            "schema": {
+              "$ref": "#/definitions/VenuePrinterPayload"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Payload": {
+      "description": "Payload printer payload wrapper",
+      "type": "object",
+      "properties": {
+        "describeMessage": {
+          "type": "string",
+          "x-go-name": "DescribeMessage"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "ipAddress": {
+          "type": "string",
+          "x-go-name": "IPAddress"
+        },
+        "printPayload": {
+          "type": "string",
+          "x-go-name": "PrintPayload"
+        },
+        "printerModel": {
+          "type": "string",
+          "x-go-name": "PrinterModel"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "VenuePrinterPayload": {
+      "description": "VenuePrinterPayload venue printer payload",
+      "type": "object",
+      "properties": {
+        "deviceId": {
+          "type": "string",
+          "x-go-name": "DeviceID"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "x-go-name": "Metadata"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "preferredNetwork": {
+          "type": "string",
+          "x-go-name": "PreferredNetwork"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "uid": {
+          "type": "string",
+          "x-go-name": "UID"
+        },
+        "version": {
+          "type": "string",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    }
+  }
+}
