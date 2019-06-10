@@ -25,7 +25,7 @@ func (TSPPrinterConverter) GenerateByteCode(commands []command.PrinterCommand) [
 		case command.CutCommandType:
 			result = append(result, []byte("\n\n\n\n\n")...)
 		case command.DashedLineCommandType:
-			if (cmdr.(command.Font)) == command.FontB {
+			if (cmdr.(command.DashedLine)).Font == command.FontB {
 				result = append(result, []byte(dashedLineB)...)
 			} else {
 				result = append(result, []byte(dashedLineA)...)

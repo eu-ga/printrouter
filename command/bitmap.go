@@ -13,7 +13,7 @@ type Bitmap struct {
 
 // GetType return bitmap command type
 func (Bitmap) GetType() Type {
-	return BoldCommandType
+	return BitmapCommandType
 }
 
 // ToString converts this command to a string
