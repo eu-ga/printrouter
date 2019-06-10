@@ -11,7 +11,7 @@ const (
 	FontD FontBank = "FontD"
 	// FontE font type FontE
 	FontE FontBank = "FontE"
-	// SpecialFontA font SpecialFontA FontE
+	// SpecialFontA font type SpecialFontA
 	SpecialFontA FontBank = "SpecialFontA"
 	// SpecialFontB font type SpecialFontB
 	SpecialFontB FontBank = "SpecialFontB"
