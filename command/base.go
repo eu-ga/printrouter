@@ -8,7 +8,7 @@ const (
 	// ReverseColorCommandType reverse color command type
 	ReverseColorCommandType Type = "ReverseColor"
 	// FontCommandType font command type
-	FontCommandType Type = "ReverseColor"
+	FontCommandType Type = "Font"
 	// DashedLineCommandType dashed line command type
 	DashedLineCommandType Type = "DashedLine"
 	// BoldCommandType bold command type

@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"github.com/rockspoon/go-common/log"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 )
 
@@ -51,6 +52,7 @@ func (TSPPrinterConverter) GenerateByteCode(commands []command.PrinterCommand) [
 		case command.TextCommandType:
 			result = append(result, []byte((cmdr.(command.Text)).Text)...)
 		default:
+			log.Error("command not found: " + cmdr.GetType())
 		}
 	}
 	return result
