@@ -1,9 +1,7 @@
 package command
 
 // Text prints text
-type Text struct {
-	Text string
-}
+type Text string
 
 // GetType returns text command type
 func (Text) GetType() Type {
@@ -12,5 +10,5 @@ func (Text) GetType() Type {
 
 // ToString converts this command to a string
 func (t Text) ToString() string {
-	return `Text(text="` + t.Text + `")`
+	return `Text(text="` + string(t) + `")`
 }

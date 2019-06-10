@@ -25,13 +25,13 @@ func (TSPPrinterConverter) GenerateByteCode(commands []command.PrinterCommand) [
 		case command.CutCommandType:
 			result = append(result, []byte("\n\n\n\n\n")...)
 		case command.DashedLineCommandType:
-			if (cmdr.(command.Font)).Font == command.FontB {
+			if (cmdr.(command.Font)) == command.FontB {
 				result = append(result, []byte(dashedLineB)...)
 			} else {
 				result = append(result, []byte(dashedLineA)...)
 			}
 		case command.FontCommandType:
-			switch cmdr.(command.Font).Font {
+			switch cmdr.(command.Font) {
 			case command.FontA:
 				result = append(result, byte(0))
 			case command.FontB:
@@ -50,7 +50,7 @@ func (TSPPrinterConverter) GenerateByteCode(commands []command.PrinterCommand) [
 		case command.NewLineCommandType:
 			result = append(result, byte(0x0A))
 		case command.TextCommandType:
-			result = append(result, []byte((cmdr.(command.Text)).Text)...)
+			result = append(result, []byte((cmdr.(command.Text)))...)
 		default:
 			log.Error("command not found: " + cmdr.GetType())
 		}

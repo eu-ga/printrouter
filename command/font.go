@@ -2,28 +2,23 @@ package command
 
 const (
 	// FontA font type FontA
-	FontA FontBank = "FontA"
+	FontA Font = "FontA"
 	// FontB font type FontB
-	FontB FontBank = "FontB"
+	FontB Font = "FontB"
 	// FontC font type FontC
-	FontC FontBank = "FontC"
+	FontC Font = "FontC"
 	// FontD font type FontD
-	FontD FontBank = "FontD"
+	FontD Font = "FontD"
 	// FontE font type FontE
-	FontE FontBank = "FontE"
+	FontE Font = "FontE"
 	// SpecialFontA font type SpecialFontA
-	SpecialFontA FontBank = "SpecialFontA"
+	SpecialFontA Font = "SpecialFontA"
 	// SpecialFontB font type SpecialFontB
-	SpecialFontB FontBank = "SpecialFontB"
+	SpecialFontB Font = "SpecialFontB"
 )
 
-// FontBank available font types
-type FontBank string
-
 // Font changes text font
-type Font struct {
-	Font FontBank
-}
+type Font string
 
 // GetType return font command type
 func (Font) GetType() Type {
@@ -32,10 +27,10 @@ func (Font) GetType() Type {
 
 // ToString converts this command to a string
 func (f Font) ToString() string {
-	return `Font(font="` + string(f.Font) + `")`
+	return `Font(font="` + string(f) + `")`
 }
 
 // GetDefaultFont returns the default font type: FontA
-func (Font) GetDefaultFont() FontBank {
+func (Font) GetDefaultFont() Font {
 	return FontA
 }

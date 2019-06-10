@@ -2,7 +2,7 @@ package command
 
 // DashedLine prints a dashed line. Line length depends on the font chosen.
 type DashedLine struct {
-	Font FontBank
+	Font Font
 }
 
 // GetType return dashed line command type
