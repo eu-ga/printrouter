@@ -1,5 +1,11 @@
 package model
 
+const (
+	TSPPrinterType PrinterType = "TSP"
+)
+
+type PrinterType string
+
 // Payload printer payload wrapper
 // swagger:model
 type Payload struct {
