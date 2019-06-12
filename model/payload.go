@@ -1,11 +1,5 @@
 package model
 
-const (
-	TSPPrinterType PrinterType = "TSP"
-)
-
-type PrinterType string
-
 // Payload printer payload wrapper
 // swagger:model
 type Payload struct {
@@ -13,7 +7,6 @@ type Payload struct {
 	IPAddress       string `json:"ipAddress"`
 	PrinterModel    string `json:"printerModel"`
 	DescribeMessage string `json:"describeMessage"`
-	ID              string `json:"id"`
 }
 
 // VenuePrinterPayload venue printer payload

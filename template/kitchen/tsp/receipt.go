@@ -13,7 +13,8 @@ const (
 	serverLineFormat      = "Server: %-25s\n"
 	stationLineFormat     = "Station: %-25s\n"
 	timeLineFormat        = "%-12s    %22s\n"
-	invoiceLineFormat     = "Order# %-9d%22s\n"
+	invoiceLineFormat     = "Order: %31s\n"
+	invoiceLine2Format    = "Table: %31s\n"
 	deliveryAddressFormat = "Address: %-25s\n"
 	itemLine1Format       = "%3dx %-23s%10s\n"
 	itemLine2Format       = "    %s\n"
@@ -35,7 +36,9 @@ func (gen ReceiptGenerator) Generate(receipt model.KitchenReceipt) []command.Pri
 		cmdrs = append(cmdrs, command.Text(fmt.Sprintf(stationLineFormat, receipt.Station)))
 	}
 	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(timeLineFormat, receipt.Timestamp.Format(dateFormat), receipt.Timestamp.Format(timeFormat))))
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(invoiceLineFormat, receipt.InvoiceNumber, gen.getTableNumber(receipt))))
+	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(invoiceLineFormat, "#"+receipt.InvoiceNumber)))
+	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(invoiceLine2Format, gen.getTableNumber(receipt))))
+
 	if receipt.DeliveryAddress != "" {
 		cmdrs = append(cmdrs, command.Text(fmt.Sprintf(deliveryAddressFormat, receipt.DeliveryAddress)))
 	}

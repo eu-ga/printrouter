@@ -5,6 +5,7 @@ import (
 	"github.com/rockspoon/rs.cor.printer-ms/helper"
 )
 
+// LineSeparator adds a horizontal line separator
 func LineSeparator(commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.NewLine{})
 	commands = append(commands, command.FontB)
@@ -13,6 +14,7 @@ func LineSeparator(commands []command.PrinterCommand) []command.PrinterCommand {
 	return commands
 }
 
+// Footer adds Rockspoon footer
 func Footer(commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.NewLine{})
 	commands = append(commands, command.NewLine{})

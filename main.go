@@ -29,13 +29,17 @@ import (
 	"github.com/rockspoon/go-common/log"
 	"github.com/rockspoon/go-common/soajs"
 	"github.com/rockspoon/rs.cor.printer-ms/controller"
+	"github.com/rockspoon/rs.cor.printer-ms/controller/integration"
 	"github.com/rockspoon/rs.cor.printer-ms/handler"
 )
 
 func main() {
 
+	// Integrations
+	deviceMS := integration.NewDeviceMS()
+
 	// Services
-	service := controller.NewPrintController()
+	service := controller.NewPrintController(deviceMS)
 
 	// Middlewares
 	wd, err := os.Getwd()

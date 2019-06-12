@@ -1,14 +1,20 @@
 package handler
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	m "github.com/rockspoon/go-common/middleware"
+	"github.com/rockspoon/go-common/util"
+	s "github.com/rockspoon/rs.cor.middleware/soajs"
+	e "github.com/rockspoon/rs.cor.printer-ms/error"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 )
 
 type printService interface {
+	KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error)
 }
 
 type (
@@ -25,28 +31,28 @@ func newPrintRouter(service printService) printRouter {
 		service,
 	}
 
-	router.Path("test").
+	router.Path("/test").
 		Methods(http.MethodGet).HandlerFunc(handler.printTest)
 
-	router.Path("sales-summary-report").
+	router.Path("/sales-summary-report").
 		Methods(http.MethodGet).HandlerFunc(handler.printSalesSummaryReport)
 
-	router.Path("payment-invoice").
+	router.Path("/payment-invoice").
 		Methods(http.MethodGet).HandlerFunc(handler.printPaymentInvoice)
 
-	router.Path("delivery-takeout/{id}/receipt").
+	router.Path("/delivery-takeout/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printDeliveryTakeoutReceipt)
 
-	router.Path("kitchen-order").
+	router.Path("/kitchen-order").
 		Methods(http.MethodGet).HandlerFunc(handler.printKitchenOrder)
 
-	router.Path("qsr/{id}/receipt").
+	router.Path("/qsr/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
 
-	router.Path("table-bill").
+	router.Path("/table-bill").
 		Methods(http.MethodGet).HandlerFunc(handler.printTableBill)
 
-	router.Path("venue/{id}/pos-printers").
+	router.Path("/venue/{id}/pos-printers").
 		Methods(http.MethodGet).HandlerFunc(handler.printVenuePrinters)
 
 	return handler
@@ -164,6 +170,25 @@ func (handler printRouter) printPaymentInvoice(w http.ResponseWriter, r *http.Re
 func (handler printRouter) printDeliveryTakeoutReceipt(w http.ResponseWriter, r *http.Request) {
 }
 
+type kitchenReceiptRequest struct {
+	model.KitchenReceiptRequest
+}
+
+// Build builds the create role JSONRequest.
+func (r *kitchenReceiptRequest) Build(req *http.Request) error {
+	err := json.NewDecoder(req.Body).Decode(r)
+	defer util.CloseOrLog(req.Body)
+	if err != nil && err != io.EOF {
+		return e.DecodeBody(err)
+	}
+	return nil
+}
+
+// Validate validates the create role JSONRequest.
+func (r kitchenReceiptRequest) Validate() error {
+	return nil
+}
+
 // swagger:operation GET /print/kitchen-order Print printKitchenOrder
 // this endpoint returns a kitchen order ticket
 // ---
@@ -174,16 +199,11 @@ func (handler printRouter) printDeliveryTakeoutReceipt(w http.ResponseWriter, r 
 //     - application/json
 //
 //     Parameters:
-//     - name: stationName
-//       in: query
+//     - name: Receipt Request
+//       in: body
 //       required: true
 //       type: string
-//       description: preparation station's name
-//     - name: itemsFiredIds
-//       in: query
-//       required: true
-//       type: string
-//       description: serialized items ids [string1,string2,string3]
+//       description: kitchen order data
 //
 //     Responses:
 //       '200':
@@ -192,6 +212,24 @@ func (handler printRouter) printDeliveryTakeoutReceipt(w http.ResponseWriter, r 
 //           $ref: "#/definitions/Payload"
 //
 func (handler printRouter) printKitchenOrder(w http.ResponseWriter, r *http.Request) {
+	var req kitchenReceiptRequest
+	err := m.ParseRequest(r, &req)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	data, err := s.RequestContextData(r)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+
+	result, err := handler.service.KitchenReceipt(req.KitchenReceiptRequest, data)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	m.JSONReturn(w, http.StatusOK, result)
 }
 
 // swagger:operation GET /print/qsr/{id}/receipt Print printQSRReceipt
