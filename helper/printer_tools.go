@@ -8,8 +8,7 @@ import (
 
 // GenerateByteCode generate byte array from a list of commands
 func GenerateByteCode(commands []command.PrinterCommand, printerType d.PrinterType) []byte {
-	switch printerType {
-	case d.TSPPrinterType:
+	if printerType == d.TSPPrinterType {
 		return converter.TSPPrinterConverter{}.GenerateByteCode(commands)
 	}
 	return make([]byte, 0)

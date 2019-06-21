@@ -5,19 +5,8 @@ import (
 )
 
 const (
-	// errCodePrefix represents code prefix error.
-	errCodePrefix = "device-ms"
-
 	codeValidateStruct = "ValidateStructure"
 )
-
-func errCodeWithPrefix(code string) string {
-	return errCodePrefix + code
-}
-
-func makeError(code, details string, cause error, statusSetter errors.ErrorStatusSetter) error {
-	return statusSetter(errCodeWithPrefix(code), details, cause)
-}
 
 // DecodeBody returns decode body error
 func DecodeBody(cause error) error {

@@ -29,22 +29,29 @@ type ReceiptGenerator struct {
 // Generate converts a model into a command list
 func (gen ReceiptGenerator) Generate(receipt model.KitchenReceipt) []command.PrinterCommand {
 	cmdrs := make([]command.PrinterCommand, 0)
-	cmdrs = append(cmdrs, command.NewLine{})
-	cmdrs = append(cmdrs, command.NewLine{})
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(serverLineFormat, receipt.Server)))
+	cmdrs = append(cmdrs,
+		command.NewLine{},
+		command.NewLine{},
+		command.Text(fmt.Sprintf(serverLineFormat, receipt.Server)),
+	)
+
 	if !receipt.IsPrintedForRunner {
 		cmdrs = append(cmdrs, command.Text(fmt.Sprintf(stationLineFormat, receipt.Station)))
 	}
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(timeLineFormat, receipt.Timestamp.Format(dateFormat), receipt.Timestamp.Format(timeFormat))))
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(invoiceLineFormat, "#"+receipt.InvoiceNumber)))
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf(invoiceLine2Format, gen.getTableNumber(receipt))))
+	cmdrs = append(cmdrs,
+		command.Text(fmt.Sprintf(timeLineFormat, receipt.Timestamp.Format(dateFormat), receipt.Timestamp.Format(timeFormat))),
+		command.Text(fmt.Sprintf(invoiceLineFormat, "#"+receipt.InvoiceNumber)),
+		command.Text(fmt.Sprintf(invoiceLine2Format, gen.getTableNumber(receipt))),
+	)
 
 	if receipt.DeliveryAddress != "" {
 		cmdrs = append(cmdrs, command.Text(fmt.Sprintf(deliveryAddressFormat, receipt.DeliveryAddress)))
 	}
 	cmdrs = template.LineSeparator(cmdrs)
-	cmdrs = append(cmdrs, command.Text(fmt.Sprintf("%38s\n", receipt.FireType)))
-	cmdrs = append(cmdrs, command.Text("QTY  Item                 Seat      \n"))
+	cmdrs = append(cmdrs,
+		command.Text(fmt.Sprintf("%38s\n", receipt.FireType)),
+		command.Text("QTY  Item                 Seat      \n"),
+	)
 
 	for _, item := range receipt.Items {
 		itemName := item.Name
@@ -67,10 +74,8 @@ func (gen ReceiptGenerator) Generate(receipt model.KitchenReceipt) []command.Pri
 					}
 					builder.WriteString(item.SeatNumber[i])
 				}
-			} else {
-				if item.IsSplit {
-					builder.WriteString("Split ")
-				}
+			} else if item.IsSplit {
+				builder.WriteString("Split ")
 			}
 		}
 		cmdrs = append(cmdrs, command.Text(fmt.Sprintf(
