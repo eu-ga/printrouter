@@ -20,8 +20,7 @@ func NewByteCodeGenerator() ByteCodeGenerator {
 // Convert convert a list of commands into a base64 encoded string
 func (b ByteCodeGenerator) Convert(commands []command.PrinterCommand, printerType d.PrinterType) string {
 	var bytes []byte
-	switch printerType {
-	case d.TSPPrinterType:
+	if printerType == d.TSPPrinterType {
 		bytes = b.TSPConverter.GenerateByteCode(commands)
 	}
 	return base64.StdEncoding.EncodeToString(bytes)

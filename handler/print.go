@@ -15,6 +15,7 @@ import (
 
 type printService interface {
 	KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error)
+	TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error)
 }
 
 type (
@@ -257,6 +258,25 @@ func (handler printRouter) printKitchenOrder(w http.ResponseWriter, r *http.Requ
 func (handler printRouter) printQSRReceipt(w http.ResponseWriter, r *http.Request) {
 }
 
+type tableBillRequest struct {
+	model.TableBillRequest
+}
+
+// Build builds the create role JSONRequest.
+func (r *tableBillRequest) Build(req *http.Request) error {
+	err := json.NewDecoder(req.Body).Decode(r)
+	defer util.CloseOrLog(req.Body)
+	if err != nil && err != io.EOF {
+		return e.DecodeBody(err)
+	}
+	return nil
+}
+
+// Validate validates the create role JSONRequest.
+func (r tableBillRequest) Validate() error {
+	return nil
+}
+
 // swagger:operation GET /print/table-bill Print printTableBill
 // this endpoint returns a table's bill payload
 // ---
@@ -280,6 +300,24 @@ func (handler printRouter) printQSRReceipt(w http.ResponseWriter, r *http.Reques
 //           $ref: "#/definitions/Payload"
 //
 func (handler printRouter) printTableBill(w http.ResponseWriter, r *http.Request) {
+	var req tableBillRequest
+	err := m.ParseRequest(r, &req)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	data, err := s.RequestContextData(r)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+
+	result, err := handler.service.TableBill(req.TableBillRequest, data)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	m.JSONReturn(w, http.StatusOK, result)
 }
 
 // swagger:operation GET /print/venue/{id}/pos-printers Print printVenuePrinters

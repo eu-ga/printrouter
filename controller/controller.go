@@ -5,6 +5,7 @@ import (
 	s "github.com/rockspoon/rs.cor.middleware/soajs"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
+	b "github.com/rockspoon/rs.cor.printer-ms/template/bill"
 	"github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
 )
 
@@ -16,6 +17,7 @@ type DeviceMS interface {
 // PrintController Print functions
 type PrintController struct {
 	KitchenReceiptGenerator kitchen.Generator
+	TableBillGenerator      b.Generator
 	Converter               converter.ByteCodeGenerator
 	DeviceMS                DeviceMS
 }
@@ -44,6 +46,25 @@ func (c PrintController) KitchenReceipt(request model.KitchenReceiptRequest, cDa
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Kitchen Receipt",
+	}
+	return &payload, nil
+}
+
+// TableBill prionts a table bill
+func (c PrintController) TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error) {
+	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
+	if err != nil {
+		return nil, err
+	}
+
+	bill := request.ToBill()
+	commands := c.TableBillGenerator.Generate(bill, printer.PrinterSettings.PrinterType)
+
+	payload := model.Payload{
+		PrintPayload:    c.Converter.Convert(commands, printer.PrinterSettings.PrinterType),
+		IPAddress:       printer.IPAddress,
+		PrinterModel:    printer.PrinterModel,
+		DescribeMessage: "[Printing Job] Table Bill",
 	}
 	return &payload, nil
 }

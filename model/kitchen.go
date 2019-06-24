@@ -18,24 +18,24 @@ type KitchenReceiptRequest struct {
 // ToKitchenReceipt convert a print request into a printable model
 func (k KitchenReceiptRequest) ToKitchenReceipt() KitchenReceipt {
 	items := make([]KitchenItem, 0)
-	for _, cardItem := range k.Card.Items {
+	for i := 0; i < len(k.Card.Items); i++ {
 		name := ""
-		for _, title := range cardItem.Title {
+		for _, title := range k.Card.Items[i].Title {
 			if title.Language == k.Language {
 				name = title.Value
 			}
 		}
 		seats := make([]string, 0)
-		for _, diner := range cardItem.OrderItemMeta.Diner {
+		for _, diner := range k.Card.Items[i].OrderItemMeta.Diner {
 			seats = append(seats, diner.Seat)
 		}
 		item := KitchenItem{
 			Name:       name,
 			Quantity:   1,
 			SeatNumber: seats,
-			IsAllSeats: cardItem.OrderItemMeta.IsAllSeats,
+			IsAllSeats: k.Card.Items[i].OrderItemMeta.IsAllSeats,
 			IsSplit:    len(seats) > 1,
-			Modifiers:  cardItem.OrderItemMeta.ItemMeta.Description,
+			Modifiers:  k.Card.Items[i].OrderItemMeta.ItemMeta.Description,
 		}
 		items = append(items, item)
 	}
