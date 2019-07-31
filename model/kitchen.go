@@ -29,13 +29,14 @@ func (k KitchenReceiptRequest) ToKitchenReceipt() KitchenReceipt {
 		for _, diner := range k.Card.Items[i].OrderItemMeta.Diner {
 			seats = append(seats, diner.Seat)
 		}
+
 		item := KitchenItem{
 			Name:       name,
 			Quantity:   1,
 			SeatNumber: seats,
 			IsAllSeats: k.Card.Items[i].OrderItemMeta.IsAllSeats,
 			IsSplit:    len(seats) > 1,
-			Modifiers:  k.Card.Items[i].OrderItemMeta.ItemMeta.Description,
+			Modifiers:  k.Card.Items[i].OrderItemMeta.ItemMeta.Description[0].Value,
 		}
 		items = append(items, item)
 	}

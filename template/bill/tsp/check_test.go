@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	m "github.com/rockspoon/go-common/money"
+	m "github.com/rockspoon/rs.cor.common-money"
 	d "github.com/rockspoon/rs.cor.device-model/model"
 	"github.com/rockspoon/rs.cor.printer-ms/helper"
 	"github.com/rockspoon/rs.cor.printer-ms/model"

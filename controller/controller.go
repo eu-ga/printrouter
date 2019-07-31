@@ -2,7 +2,7 @@ package controller
 
 import (
 	d "github.com/rockspoon/rs.cor.device-model/model"
-	s "github.com/rockspoon/rs.cor.middleware/soajs"
+	s "github.com/rockspoon/rs.cor.middleware/model"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	b "github.com/rockspoon/rs.cor.printer-ms/template/bill"

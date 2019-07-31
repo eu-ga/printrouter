@@ -8,14 +8,15 @@ import (
 	"github.com/gorilla/mux"
 	m "github.com/rockspoon/go-common/middleware"
 	"github.com/rockspoon/go-common/util"
+	mm "github.com/rockspoon/rs.cor.middleware/model"
 	s "github.com/rockspoon/rs.cor.middleware/soajs"
 	e "github.com/rockspoon/rs.cor.printer-ms/error"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 )
 
 type printService interface {
-	KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error)
-	TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error)
+	KitchenReceipt(request model.KitchenReceiptRequest, cData *mm.ContextData) (*model.Payload, error)
+	TableBill(request model.TableBillRequest, cData *mm.ContextData) (*model.Payload, error)
 }
 
 type (

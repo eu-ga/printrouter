@@ -3,13 +3,14 @@ package model
 import (
 	"time"
 
-	m "github.com/rockspoon/go-common/money"
 	order "github.com/rockspoon/rs.com.order-model/model"
+	money "github.com/rockspoon/rs.cor.common-money"
 )
 
 // TableBillRequest table bill print request
 type TableBillRequest struct {
 	Order       order.Order       `json:"order"`
+	Check       order.CheckOrder  `json:"check"`
 	DineinOrder order.DineInOrder `json:"dineinOrder"`
 	Items       []order.OrderItem `json:"items"`
 	Language    string            `json:"language"`
@@ -50,9 +51,10 @@ func (t TableBillRequest) GetTableInfo() TableInfo {
 	}
 	waiterName := ""
 	tableNumber := ""
-	if t.DineinOrder.Tables != nil && len(t.DineinOrder.Tables) > 0 {
-		waiterName = t.DineinOrder.Tables[len(t.DineinOrder.Tables)-1].WaiterName
-		tableNumber = t.DineinOrder.Tables[len(t.DineinOrder.Tables)-1].Name
+
+	if t.DineinOrder.CurrentTableHistory.Tables != nil && len(t.DineinOrder.CurrentTableHistory.Tables) > 0 {
+		waiterName = t.DineinOrder.CurrentTableHistory.WaiterName
+		tableNumber = t.DineinOrder.CurrentTableHistory.Name
 	}
 
 	return TableInfo{
@@ -65,15 +67,16 @@ func (t TableBillRequest) GetTableInfo() TableInfo {
 
 // GetInvoiceCheck get InvoiceCheck from the request
 func (t TableBillRequest) GetInvoiceCheck() InvoiceCheck {
+	check := t.Check.Summarize(money.CurrencyUSD(), t.DineinOrder.MaxCustomerCount)
 	return InvoiceCheck{
-		SubTotal:                t.Order.Check.Subtotal,
-		DiscountAmount:          t.Order.Check.DiscountAmount,
-		DiscountRate:            t.Order.Check.DiscountRate,
-		MandatoryGratuityRate:   t.Order.Check.MandatoryGratuityRate,
-		MandatoryGratuityAmount: t.Order.Check.MandatoryGratuityAmount,
-		TaxRate:                 t.Order.Check.TaxRate,
-		TaxAmount:               t.Order.Check.TaxAmount,
-		Total:                   t.Order.Check.Total,
+		SubTotal:                check.Subtotal,
+		DiscountAmount:          check.DiscountAmount,
+		DiscountRate:            float32(check.DiscountRate.Value),
+		MandatoryGratuityRate:   float32(check.MandatoryGratuityRate.Value),
+		MandatoryGratuityAmount: check.MandatoryGratuityAmount,
+		TaxRate:                 float32(check.TaxRate.Value),
+		TaxAmount:               check.TaxAmount,
+		Total:                   check.Total,
 	}
 }
 
@@ -120,15 +123,15 @@ type Bill struct {
 
 // InvoiceCheck check information
 type InvoiceCheck struct {
-	SubTotal                m.Money
-	DiscountAmount          m.Money
+	SubTotal                money.Money
+	DiscountAmount          money.Money
 	DiscountRate            float32
 	MandatoryGratuityRate   float32
-	MandatoryGratuityAmount m.Money
+	MandatoryGratuityAmount money.Money
 	TaxRate                 float32
-	TaxAmount               m.Money
-	DeliveryFeeAmount       m.Money
-	Total                   m.Money
+	TaxAmount               money.Money
+	DeliveryFeeAmount       money.Money
+	Total                   money.Money
 	SalesTaxDescription     string
 }
 
@@ -145,7 +148,7 @@ type InvoiceItem struct {
 	ItemName  string
 	Quantity  int
 	Weight    int
-	Amount    m.Money
+	Amount    money.Money
 	Modifiers string
 }
 
