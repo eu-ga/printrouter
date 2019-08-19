@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	d "github.com/rockspoon/rs.cor.device-model/model"
-	s "github.com/rockspoon/rs.cor.middleware/soajs"
+	s "github.com/rockspoon/rs.cor.middleware/model"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	b "github.com/rockspoon/rs.cor.printer-ms/template/bill"
@@ -43,6 +43,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 			name:         "Printer MS Error",
 			printerError: errors.New("no default printer"),
 			data: &s.ContextData{
+				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
@@ -52,6 +53,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 			name:    "success",
 			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
 			data: &s.ContextData{
+				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
@@ -93,6 +95,7 @@ func TestController_TableBill(t *testing.T) {
 			name:         "Printer MS Error",
 			printerError: errors.New("no default printer"),
 			data: &s.ContextData{
+				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
@@ -102,6 +105,7 @@ func TestController_TableBill(t *testing.T) {
 			name:    "success",
 			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
 			data: &s.ContextData{
+				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},

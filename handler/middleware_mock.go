@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/rockspoon/go-common/middleware"
-	s "github.com/rockspoon/rs.cor.middleware/soajs"
+	s "github.com/rockspoon/rs.cor.middleware/model"
 	soajsgo "github.com/soajs/soajs.golang"
 )
 
@@ -57,6 +57,7 @@ func soajsTest(addContext bool, tenantID, uracID, eKey string) middleware.Middle
 
 func getContextData(tenantID, uracID, eKey string) *s.ContextData {
 	return &s.ContextData{
+		//nolint:staticcheck
 		Tenant: s.Tenant{
 			ID:   tenantID,
 			Code: "",

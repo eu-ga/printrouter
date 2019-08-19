@@ -8,7 +8,7 @@ import (
 	"github.com/gavv/httpexpect"
 	"github.com/gorilla/mux"
 	"github.com/rockspoon/go-common/middleware"
-	s "github.com/rockspoon/rs.cor.middleware/soajs"
+	mm "github.com/rockspoon/rs.cor.middleware/model"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 )
 
@@ -17,14 +17,14 @@ type ControllerMock struct {
 	Error   error
 }
 
-func (c ControllerMock) KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c ControllerMock) KitchenReceipt(request model.KitchenReceiptRequest, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}
 	return c.Payload, nil
 }
 
-func (c ControllerMock) TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c ControllerMock) TableBill(request model.TableBillRequest, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}
@@ -39,7 +39,7 @@ func TestRouter_KitchenReceipt(t *testing.T) {
 		request         string
 		payload         *model.Payload
 		controllerError error
-		contextData     *s.ContextData
+		contextData     *mm.ContextData
 		expectedCode    int
 		expectedBody    string
 	}{
@@ -112,7 +112,7 @@ func TestRouter_TableBill(t *testing.T) {
 		request         string
 		payload         *model.Payload
 		controllerError error
-		contextData     *s.ContextData
+		contextData     *mm.ContextData
 		expectedCode    int
 		expectedBody    string
 	}{
