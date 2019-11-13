@@ -4,16 +4,19 @@ import (
 	"time"
 
 	order "github.com/rockspoon/rs.com.order-model/model"
-	money "github.com/rockspoon/rs.cor.common-money"
+	summary "github.com/rockspoon/rs.com.order-model/summary"
+	transform "github.com/rockspoon/rs.cor.printer-ms/transformation"
+	model "github.com/rockspoon/rs.cor.printer-ms/transformation/model"
+	vm "github.com/rockspoon/rs.cor.venue-model/v4/model"
+	"golang.org/x/text/language"
 )
 
 // TableBillRequest table bill print request
 type TableBillRequest struct {
-	Order       order.Order       `json:"order"`
-	Check       order.CheckOrder  `json:"check"`
-	DineinOrder order.DineInOrder `json:"dineinOrder"`
-	Items       []order.OrderItem `json:"items"`
-	Language    string            `json:"language"`
+	Order    order.Order          `json:"order"`
+	Check    summary.CheckSummary `json:"check"`
+	Venue    vm.Address           `json:"venue"`
+	Language language.Tag         `json:"language"`
 }
 
 // ToBill converts the request struct into a printable struct
@@ -21,10 +24,10 @@ func (t TableBillRequest) ToBill() Bill {
 	bill := Bill{
 		RestaurantInfo: t.GetRestaurantInfo(),
 		TableInfo:      t.GetTableInfo(),
-		InvoiceCheck:   t.GetInvoiceCheck(),
-		InvoiceNumber:  t.Order.ID.Hex(),
-		BillTime:       t.Order.CreatedAt,
-		Items:          t.OrderItemsToInvoiceItems(),
+		InvoiceCheck:   transform.FromCheckSummaryToInvoiceCheck(t.Check, t.Language),
+		//InvoiceNumber:  t.Order.ID.Hex(),
+		BillTime: t.Order.CreatedAt,
+		Items:    transform.FromCheckSummaryToInvoiceItems(t.Check, t.Language), // t.OrderItemsToInvoiceItems(),
 	}
 	return bill
 }
@@ -32,13 +35,13 @@ func (t TableBillRequest) ToBill() Bill {
 // GetRestaurantInfo get Restaurant Info from the request
 func (t TableBillRequest) GetRestaurantInfo() RestaurantInfo {
 	return RestaurantInfo{
-		RestaurantName:    t.DineinOrder.Address.Name,
-		RestaurantAddress: t.DineinOrder.Address.AddressLine,
-		RestaurantZipCode: t.DineinOrder.Address.Zip,
-		RestaurantCity:    t.DineinOrder.Address.City,
-		RestaurantRegion:  t.DineinOrder.Address.State,
-		RestaurantCountry: t.DineinOrder.Address.Country,
-		RestaurantPhone:   t.DineinOrder.Address.Phone,
+		RestaurantName:    t.Venue.Name,     //t.DineinOrder.Address.Name,
+		RestaurantAddress: t.Venue.Address1, //t.DineinOrder.Address.AddressLine,
+		RestaurantZipCode: t.Venue.ZipCode,  //t.DineinOrder.Address.Zip,
+		RestaurantCity:    t.Venue.City,     //t.DineinOrder.Address.City,
+		RestaurantRegion:  t.Venue.State,    //t.DineinOrder.Address.State,
+		RestaurantCountry: t.Venue.Country,  //t.DineinOrder.Address.Country,
+		RestaurantPhone:   "",               //t.DineinOrder.Address.Phone,
 	}
 }
 
@@ -46,110 +49,89 @@ func (t TableBillRequest) GetRestaurantInfo() RestaurantInfo {
 func (t TableBillRequest) GetTableInfo() TableInfo {
 
 	customerName := ""
-	if t.DineinOrder.Diners != nil && len(t.DineinOrder.Diners) > 0 {
-		customerName = t.DineinOrder.Diners[0].Name
+	if t.Check.CheckPayer != nil {
+		customerName = t.Check.CheckPayer.Name
 	}
-	waiterName := ""
-	tableNumber := ""
 
-	if t.DineinOrder.CurrentTableHistory.Tables != nil && len(t.DineinOrder.CurrentTableHistory.Tables) > 0 {
-		waiterName = t.DineinOrder.CurrentTableHistory.WaiterName
-		tableNumber = t.DineinOrder.CurrentTableHistory.Name
+	waiterName := ""
+	elementNames := []string{}
+	if t.Order.DineInOrder != nil {
+		waiterName = t.Order.DineInOrder.AssignedTo.EmployeeID.Hex()
+		for i := range t.Order.DineInOrder.FloorPlanLocation.FloorPlanElements {
+			elementNames = append(elementNames, t.Order.DineInOrder.FloorPlanLocation.FloorPlanElements[i].FloorPlanElementName)
+		}
 	}
 
 	return TableInfo{
 		DiningPartyType: string(t.Order.Type),
 		ServerName:      waiterName,
-		TableNumber:     tableNumber,
+		TableNumber:     elementNames,
 		CustomerName:    customerName,
 	}
 }
 
 // GetInvoiceCheck get InvoiceCheck from the request
-func (t TableBillRequest) GetInvoiceCheck() InvoiceCheck {
-	check := t.Check.Summarize(money.CurrencyUSD(), t.DineinOrder.MaxCustomerCount)
-	return InvoiceCheck{
-		SubTotal:                check.Subtotal,
-		DiscountAmount:          check.DiscountAmount,
-		DiscountRate:            float32(check.DiscountRate.Value),
-		MandatoryGratuityRate:   float32(check.MandatoryGratuityRate.Value),
-		MandatoryGratuityAmount: check.MandatoryGratuityAmount,
-		TaxRate:                 float32(check.TaxRate.Value),
-		TaxAmount:               check.TaxAmount,
-		Total:                   check.Total,
-	}
-}
+// func (t TableBillRequest) GetInvoiceCheck() model.InvoiceCheck {
+// 	check := t.Check.Summarize(money.CurrencyUSD(), t.DineinOrder.MaxCustomerCount)
+// 	return model.InvoiceCheck{
+// 		SubTotal:                check.Subtotal,
+// 		DiscountAmount:          check.DiscountAmount,
+// 		DiscountRate:            float32(check.DiscountRate.Value),
+// 		MandatoryGratuityRate:   float32(check.MandatoryGratuityRate.Value),
+// 		MandatoryGratuityAmount: check.MandatoryGratuityAmount,
+// 		TaxRate:                 float32(check.TaxRate.Value),
+// 		TaxAmount:               check.TaxAmount,
+// 		Total:                   check.Total,
+// 	}
+// }
 
 // OrderItemsToInvoiceItems converts order items into printable models
-func (t TableBillRequest) OrderItemsToInvoiceItems() []InvoiceItem {
-	items := make([]InvoiceItem, 0)
-	for i := 0; i < len(t.Items); i++ {
-		name := ""
-		for _, n := range t.Items[i].Name {
-			if n.Language == t.Language {
-				name = n.Value
-			}
-		}
+// func (t TableBillRequest) OrderItemsToInvoiceItems() []model.InvoiceItem {
+// 	items := make([]model.InvoiceItem, 0)
+// 	for i := 0; i < len(t.Items); i++ {
+// 		name := ""
+// 		for _, n := range t.Items[i].Name {
+// 			if n.Language == t.Language {
+// 				name = n.Value
+// 			}
+// 		}
 
-		mod := ""
-		for _, desc := range t.Items[i].Description {
-			if desc.Language == t.Language {
-				mod = desc.Value
-			}
-		}
-		item := InvoiceItem{
-			ItemName: name,
-			// TODO review
-			Quantity:  1,
-			Weight:    1,
-			Amount:    t.Items[i].Price,
-			Modifiers: mod,
-		}
-		items = append(items, item)
-	}
-	return items
-}
+// 		mod := ""
+// 		for _, desc := range t.Items[i].Description {
+// 			if desc.Language == t.Language {
+// 				mod = desc.Value
+// 			}
+// 		}
+// 		item := model.InvoiceItem{
+// 			ItemName: name,
+// 			// TODO review
+// 			Quantity:  1,
+// 			Weight:    1,
+// 			Amount:    t.Items[i].Price.Amount,
+// 			Modifiers: mod,
+// 		}
+// 		items = append(items, item)
+// 	}
+// 	return items
+// }
 
 // Bill printable table bill
 type Bill struct {
 	RestaurantInfo
 	TableInfo
-	InvoiceCheck
+	InvoiceCheck model.InvoiceCheck
 
 	InvoiceNumber string
 	BillTime      time.Time
-	Items         []InvoiceItem
-}
-
-// InvoiceCheck check information
-type InvoiceCheck struct {
-	SubTotal                money.Money
-	DiscountAmount          money.Money
-	DiscountRate            float32
-	MandatoryGratuityRate   float32
-	MandatoryGratuityAmount money.Money
-	TaxRate                 float32
-	TaxAmount               money.Money
-	DeliveryFeeAmount       money.Money
-	Total                   money.Money
-	SalesTaxDescription     string
+	Items         []model.InvoiceItem
 }
 
 // TableInfo table information
 type TableInfo struct {
 	DiningPartyType string
 	ServerName      string
-	TableNumber     string
+	TableNumber     []string
 	CustomerName    string
-}
-
-// InvoiceItem ordered item
-type InvoiceItem struct {
-	ItemName  string
-	Quantity  int
-	Weight    int
-	Amount    money.Money
-	Modifiers string
 }
 
 // RestaurantInfo restaurant information
