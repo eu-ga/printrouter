@@ -1,146 +1,79 @@
 package model
 
 import (
-	"time"
-
-	order "github.com/rockspoon/rs.com.order-model/model"
-	summary "github.com/rockspoon/rs.com.order-model/summary"
-	transform "github.com/rockspoon/rs.cor.printer-ms/transformation"
-	model "github.com/rockspoon/rs.cor.printer-ms/transformation/model"
-	vm "github.com/rockspoon/rs.cor.venue-model/v4/model"
-	"golang.org/x/text/language"
+	"github.com/rockspoon/rs.cor.common-model/address"
+	money "github.com/rockspoon/rs.cor.common-money"
 )
 
-// TableBillRequest table bill print request
-type TableBillRequest struct {
-	Order    order.Order          `json:"order"`
-	Check    summary.CheckSummary `json:"check"`
-	Venue    vm.Address           `json:"venue"`
-	Language language.Tag         `json:"language"`
-}
+// TypesOfOrder is the type of order
+type TypesOfOrder string
 
-// ToBill converts the request struct into a printable struct
-func (t TableBillRequest) ToBill() Bill {
-	bill := Bill{
-		RestaurantInfo: t.GetRestaurantInfo(),
-		TableInfo:      t.GetTableInfo(),
-		InvoiceCheck:   transform.FromCheckSummaryToInvoiceCheck(t.Check, t.Language),
-		//InvoiceNumber:  t.Order.ID.Hex(),
-		BillTime: t.Order.CreatedAt,
-		Items:    transform.FromCheckSummaryToInvoiceItems(t.Check, t.Language), // t.OrderItemsToInvoiceItems(),
-	}
-	return bill
-}
+const (
+	// TypesOfOrderDinein represents dinein available sales option
+	TypesOfOrderDinein TypesOfOrder = "dinein"
+	// TypesOfOrderTakeout represents takeout available sales option
+	TypesOfOrderTakeout TypesOfOrder = "takeout"
+	// TypesOfOrderDelivery represents delivery available sales option
+	TypesOfOrderDelivery TypesOfOrder = "delivery"
+	// TypesOfOrderCatering represents catering available sales option
+	TypesOfOrderCatering TypesOfOrder = "catering"
+)
 
-// GetRestaurantInfo get Restaurant Info from the request
-func (t TableBillRequest) GetRestaurantInfo() RestaurantInfo {
-	return RestaurantInfo{
-		RestaurantName:    t.Venue.Name,     //t.DineinOrder.Address.Name,
-		RestaurantAddress: t.Venue.Address1, //t.DineinOrder.Address.AddressLine,
-		RestaurantZipCode: t.Venue.ZipCode,  //t.DineinOrder.Address.Zip,
-		RestaurantCity:    t.Venue.City,     //t.DineinOrder.Address.City,
-		RestaurantRegion:  t.Venue.State,    //t.DineinOrder.Address.State,
-		RestaurantCountry: t.Venue.Country,  //t.DineinOrder.Address.Country,
-		RestaurantPhone:   "",               //t.DineinOrder.Address.Phone,
-	}
-}
-
-// GetTableInfo get TableInfo from the request object
-func (t TableBillRequest) GetTableInfo() TableInfo {
-
-	customerName := ""
-	if t.Check.CheckPayer != nil {
-		customerName = t.Check.CheckPayer.Name
-	}
-
-	waiterName := ""
-	elementNames := []string{}
-	if t.Order.DineInOrder != nil {
-		waiterName = t.Order.DineInOrder.AssignedTo.EmployeeID.Hex()
-		for i := range t.Order.DineInOrder.FloorPlanLocation.FloorPlanElements {
-			elementNames = append(elementNames, t.Order.DineInOrder.FloorPlanLocation.FloorPlanElements[i].FloorPlanElementName)
-		}
-	}
-
-	return TableInfo{
-		DiningPartyType: string(t.Order.Type),
-		ServerName:      waiterName,
-		TableNumber:     elementNames,
-		CustomerName:    customerName,
-	}
-}
-
-// GetInvoiceCheck get InvoiceCheck from the request
-// func (t TableBillRequest) GetInvoiceCheck() model.InvoiceCheck {
-// 	check := t.Check.Summarize(money.CurrencyUSD(), t.DineinOrder.MaxCustomerCount)
-// 	return model.InvoiceCheck{
-// 		SubTotal:                check.Subtotal,
-// 		DiscountAmount:          check.DiscountAmount,
-// 		DiscountRate:            float32(check.DiscountRate.Value),
-// 		MandatoryGratuityRate:   float32(check.MandatoryGratuityRate.Value),
-// 		MandatoryGratuityAmount: check.MandatoryGratuityAmount,
-// 		TaxRate:                 float32(check.TaxRate.Value),
-// 		TaxAmount:               check.TaxAmount,
-// 		Total:                   check.Total,
-// 	}
-// }
-
-// OrderItemsToInvoiceItems converts order items into printable models
-// func (t TableBillRequest) OrderItemsToInvoiceItems() []model.InvoiceItem {
-// 	items := make([]model.InvoiceItem, 0)
-// 	for i := 0; i < len(t.Items); i++ {
-// 		name := ""
-// 		for _, n := range t.Items[i].Name {
-// 			if n.Language == t.Language {
-// 				name = n.Value
-// 			}
-// 		}
-
-// 		mod := ""
-// 		for _, desc := range t.Items[i].Description {
-// 			if desc.Language == t.Language {
-// 				mod = desc.Value
-// 			}
-// 		}
-// 		item := model.InvoiceItem{
-// 			ItemName: name,
-// 			// TODO review
-// 			Quantity:  1,
-// 			Weight:    1,
-// 			Amount:    t.Items[i].Price.Amount,
-// 			Modifiers: mod,
-// 		}
-// 		items = append(items, item)
-// 	}
-// 	return items
-// }
-
-// Bill printable table bill
+// Bill is a collection of information that have to be printed in the bill
 type Bill struct {
-	RestaurantInfo
-	TableInfo
-	InvoiceCheck model.InvoiceCheck
-
-	InvoiceNumber string
-	BillTime      time.Time
-	Items         []model.InvoiceItem
+	Restaurant    RestaurantInfo
+	OrderType     TypesOfOrder
+	AttendantName string // Can be the waiter in dineIn or the person who answered the phone in Delivery and takeout
+	Checks        []Check
 }
 
-// TableInfo table information
-type TableInfo struct {
-	DiningPartyType string
-	ServerName      string
-	TableNumber     []string
-	CustomerName    string
-}
-
-// RestaurantInfo restaurant information
+// RestaurantInfo is the info about the restaurant
 type RestaurantInfo struct {
-	RestaurantName    string
-	RestaurantAddress string
-	RestaurantZipCode string
-	RestaurantCity    string
-	RestaurantRegion  string
-	RestaurantCountry string
-	RestaurantPhone   string
+	Name    string
+	Address address.Address
+	Phone   *string
+}
+
+// Check to be printed
+type Check struct {
+	DineInOptions *DineInOptions // Used only on DineIn
+	CustomerInfo  *CustomerInfo  // Used only on delivery e takeout
+
+	Items    []EntryItem
+	Subtotal money.SimpleMoney // Sum of all items finalPrices + subEntries finalPrices
+	Charges  []SubEntry
+	Total    money.SimpleMoney // Subtotal + charge
+}
+
+// DineInOptions location about dinein
+type DineInOptions struct {
+	SectionName string
+	Tables      string
+	Seats       string
+}
+
+// CustomerInfo is info about customere
+type CustomerInfo struct {
+	Name    string
+	Address *address.Address // Used only on delivery
+	Phone   string
+}
+
+// EntryItem is an item
+type EntryItem struct {
+	Name       string
+	Quantity   int
+	UnityPrice money.SimpleMoney
+	FinalPrice money.SimpleMoney // UnityPrice * quantity
+	SubEntries []SubEntry
+	Weight     int //to be implemented (name to be decided, could be division)
+}
+
+// SubEntry is description of an ite
+type SubEntry struct {
+	Name        string
+	Description string
+	Index       int               // Order to exhibite the subEntry
+	UnityPrice  money.SimpleMoney // Can be zero if only the finalPrice matters
+	FinalPrice  money.SimpleMoney // UnityPrice * quantity of entry item
 }

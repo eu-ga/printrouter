@@ -20,3 +20,20 @@ func Center(str, padding string, size int) string {
 	}
 	return builder.String()
 }
+
+// WarpString returns an array os string warped in the lenght warpLength
+func WarpString(str string, warpLength int) []string {
+	words := strings.Split(str, " ")
+	res := []string{""}
+	line := 0
+	for i := range words {
+		if len(words[i])+1+len(res[line]) <= warpLength {
+			res[line] = res[line] + words[i] + " "
+		} else {
+			res[line] = res[line][:(len(res[line]) - 1)] // remove the space form the last word in line
+			res = append(res, words[i]+" ")
+			line++
+		}
+	}
+	return res
+}

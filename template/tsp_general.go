@@ -49,13 +49,13 @@ func Footer(commands []command.PrinterCommand) []command.PrinterCommand {
 func AddRestaurantInfo(info model.RestaurantInfo, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.NewLine{},
 		command.NewLine{},
-		command.Text(helper.Center(info.RestaurantName, " ", 38)),
+		command.Text(helper.Center(info.Name, " ", 38)),
 		command.NewLine{},
-		command.Text(helper.Center(info.RestaurantAddress, " ", 38)),
+		command.Text(helper.Center(info.Address.Address1, " ", 38)),
 		command.NewLine{},
-		command.Text(helper.Center(info.RestaurantCity+" "+info.RestaurantZipCode, " ", 38)),
+		command.Text(helper.Center(info.Address.City+" "+info.Address.ZipCode, " ", 38)),
 		command.NewLine{},
-		command.Text(helper.Center(info.RestaurantRegion+" "+info.RestaurantCountry, " ", 38)),
+		command.Text(helper.Center(info.Address.Region+" "+info.Address.Country, " ", 38)),
 		command.NewLine{},
 	)
 	return commands
@@ -82,6 +82,16 @@ func AddInvoiceCheck(invoice model.InvoiceCheck, commands []command.PrinterComma
 
 	return commands
 }
+
+// AddItems add items
+// func AddItems(entryItems []model.EntryItem, commands []command.PrinterCommand) []command.PrinterCommand {
+// 	commands = append(commands, command.Text("                         Unity  Final \n"))
+// 	commands = append(commands, command.Text("QTY Item                 Price  Price \n\n"))
+
+// 	for i := range items {
+
+// 	}
+// }
 
 // AddInvoiceItems add invoice items
 func AddInvoiceItems(items []model.InvoiceItem, commands []command.PrinterCommand) []command.PrinterCommand {
