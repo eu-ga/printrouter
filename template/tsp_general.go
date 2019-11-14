@@ -2,7 +2,6 @@ package template
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/rockspoon/rs.cor.printer-ms/command"
@@ -11,13 +10,13 @@ import (
 )
 
 const (
-	invoiceLineFormat    = "Order: %30s\n"
-	dateFormat           = "Jan 2, 2006               03:04:05 PM"
-	serverLineFormat     = "Server: %-25s\n"
-	itemLine1Format      = "%3dx %-22s $ %6.2f\n"
-	itemLine2Format      = "     %s\n"
-	totalsFormat         = "%-27s $ %6.2f\n"
-	discountTotalsFormat = "%-27s $ %6.2f\n"
+	serverLineFormat    = "Attendant: %-25s\n"
+	dateFormat          = "Jan 2, 2006               03:04:05 PM"
+	itemLine1Format     = "\n%2dx %-16s %8.2f %8.2f\n"
+	itemLine2Format     = "    %-16s\n"
+	subEntryFormat      = "    * %-14s %+8.2f %+8.2f\n"
+	subEntryLine2Format = "      %-14s\n"
+	totalsFormat        = "%-25s %-3s %8.2f\n"
 )
 
 // LineSeparator adds a horizontal line separator
@@ -61,88 +60,87 @@ func AddRestaurantInfo(info model.RestaurantInfo, commands []command.PrinterComm
 	return commands
 }
 
-// AddInvoiceCheck adds pricing information
-func AddInvoiceCheck(invoice model.InvoiceCheck, commands []command.PrinterCommand) []command.PrinterCommand {
-	commands = append(commands, command.Text(fmt.Sprintf(totalsFormat, "Subtotal:", invoice.SubTotal.Price())))
-
-	if invoice.DeliveryFeeAmount.Value > 0 {
-		commands = append(commands, command.Text(fmt.Sprintf(totalsFormat, "Delivery:", invoice.DeliveryFeeAmount.Price())))
+// AddCheckTotal adds pricing information
+func AddCheckTotal(check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
+	commands = append(commands, command.Text(fmt.Sprintf(totalsFormat, "Subtotal:", check.Subtotal.Symbol, check.Subtotal.Price)))
+	for _, charge := range check.Charges {
+		title := charge.Name
+		if charge.Description != "" {
+			title = title + "(" + charge.Description + ")"
+		}
+		chargeTitle := helper.WarpString(title, 27)
+		line := fmt.Sprintf(totalsFormat, chargeTitle[0], check.Subtotal.Symbol, charge.FinalPrice.Price)
+		commands = append(commands, command.Text(line))
+		for i := range chargeTitle[1:] {
+			line = fmt.Sprintf(subEntryLine2Format, chargeTitle[i+1])
+			commands = append(commands, command.Text(line))
+		}
 	}
-	if invoice.DiscountAmount.Value > 0 {
-		commands = append(commands, command.Text(fmt.Sprintf(discountTotalsFormat, "Discount:", invoice.DiscountAmount.Price()*float64(-1))))
-	}
-	if invoice.MandatoryGratuityAmount.Value > 0 {
-		str := "Gratuity (" + strconv.FormatFloat(float64(invoice.MandatoryGratuityRate)*float64(100), 'f', 2, 32) + "):"
-		commands = append(commands, command.Text(fmt.Sprintf(discountTotalsFormat, str, invoice.MandatoryGratuityAmount.Price())))
-	}
-	commands = append(commands, command.Text(fmt.Sprintf(totalsFormat,
-		invoice.SalesTaxDescription, invoice.TaxAmount.Price())),
-		command.Text(fmt.Sprintf(totalsFormat, "Total:", invoice.Total.Price())),
-	)
+	commands = append(commands, command.Text(fmt.Sprintf(totalsFormat, "Total:", check.Subtotal.Symbol, check.Total.Price)))
 
 	return commands
 }
 
 // AddItems add items
-// func AddItems(entryItems []model.EntryItem, commands []command.PrinterCommand) []command.PrinterCommand {
-// 	commands = append(commands, command.Text("                         Unity  Final \n"))
-// 	commands = append(commands, command.Text("QTY Item                 Price  Price \n\n"))
+func AddItems(entryItems []model.EntryItem, commands []command.PrinterCommand) []command.PrinterCommand {
+	commands = append(commands, command.Text("                         Unity   Final\n"))
+	commands = append(commands, command.Text("QTY Item                 Price   Price\n"))
 
-// 	for i := range items {
-
-// 	}
-// }
-
-// AddInvoiceItems add invoice items
-func AddInvoiceItems(items []model.InvoiceItem, commands []command.PrinterCommand) []command.PrinterCommand {
-	commands = append(commands, command.Text("QTY  Item                      Price\n\n"))
-	for _, item := range items {
-		itemName := item.ItemName
-		if len(itemName) > 23 {
-			itemName = itemName[:20] + "..."
+	for _, item := range entryItems {
+		itemName := helper.WarpString(item.Name, 16)
+		line := fmt.Sprintf(itemLine1Format, item.Quantity, itemName[0], item.UnityPrice.Price, item.FinalPrice.Price)
+		commands = append(commands, command.Text(line))
+		for i := range itemName[1:] {
+			line = fmt.Sprintf(itemLine2Format, itemName[i+1])
+			commands = append(commands, command.Text(line))
 		}
 
-		amount := item.Amount.Price() * float64(item.Quantity)
-		commands = append(commands, command.Text(fmt.Sprintf(itemLine1Format, item.Quantity, itemName, amount)))
-		if item.Modifiers != "" {
-			commands = append(commands, command.FontB)
-
-			for i := 0; i*31 < len(item.Modifiers); i++ {
-				rightBound := (i + 1) * 31
-				if rightBound > len(item.Modifiers) {
-					rightBound = len(item.Modifiers)
-				}
-				commands = append(commands, command.Text(fmt.Sprintf(itemLine2Format, item.Modifiers[i*31:rightBound])))
+		for _, subEntry := range item.SubEntries {
+			title := subEntry.Name
+			if subEntry.Description != "" {
+				title = title + "(" + subEntry.Description + ")"
 			}
-
+			subEntryName := helper.WarpString(title, 16)
+			line := fmt.Sprintf(subEntryFormat, subEntryName[0], subEntry.UnityPrice.Price, subEntry.FinalPrice.Price)
+			commands = append(commands, command.Text(line))
+			for i := range subEntryName[1:] {
+				line = fmt.Sprintf(subEntryLine2Format, subEntryName[i+1])
+				commands = append(commands, command.Text(line))
+			}
 		}
 	}
 	return commands
 }
 
-// AddTableInfo adds Table Information
-func AddTableInfo(table model.TableInfo, invoiceNumber string, billTime time.Time, commands []command.PrinterCommand) []command.PrinterCommand {
-	commands = append(commands, command.Text(fmt.Sprintf(invoiceLineFormat, "#"+invoiceNumber)),
+// AddServiceInfo adds Table Information
+func AddServiceInfo(attendantName string, orderType model.TypesOfOrder, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
+	commands = append(commands,
+		command.Text(time.Now().Format(dateFormat)),
 		command.NewLine{},
-		command.Text(billTime.Format(dateFormat)),
-		command.NewLine{},
-		command.Text(fmt.Sprintf(serverLineFormat, table.ServerName)),
+		command.Text(fmt.Sprintf(serverLineFormat, attendantName)),
 		command.NewLine{},
 	)
-	if table.DiningPartyType == "dinein" {
+
+	if orderType == model.TypesOfOrderDinein {
 		commands = append(commands,
-			command.Bold{Enabled: true},
-			command.Text("Table: "+table.TableNumber),
+			// command.Bold{Enabled: true},
+			command.Text("Section: "+check.DineInOptions.SectionName),
+			command.NewLine{},
+			command.Text("Tables: "+check.DineInOptions.Tables),
+			command.NewLine{},
+			command.Text("Seats: "+check.DineInOptions.Seats),
 			command.NewLine{},
 		)
 	} else {
 		commands = append(commands,
-			command.Text("Customer: "+table.CustomerName),
+			command.Text("Customer: "+check.CustomerInfo.Name),
 			command.NewLine{},
-			command.NewLine{},
-			command.Text(helper.Center(table.DiningPartyType, " ", 38)),
+			command.Text("Phone number: "+check.CustomerInfo.Phone),
 			command.NewLine{},
 		)
+		if check.CustomerInfo.Address != nil {
+			commands = append(commands, command.Text("Address: "+check.CustomerInfo.Address.Address1), command.NewLine{})
+		}
 	}
 	return commands
 }
