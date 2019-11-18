@@ -32,13 +32,12 @@ func NewPrintController(deviceMS DeviceMS) PrintController {
 }
 
 // KitchenReceipt print a kitchen receipt
-func (c PrintController) KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c PrintController) KitchenReceipt(receipt model.KitchenReceipt, cData *s.ContextData) (*model.Payload, error) {
 	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
 	if err != nil {
 		return nil, err
 	}
 
-	receipt := request.ToKitchenReceipt()
 	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterSettings.PrinterType)
 
 	payload := model.Payload{

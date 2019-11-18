@@ -1,8 +1,13 @@
 module github.com/rockspoon/rs.cor.printer-ms
 
 require (
+	github.com/ajg/form v1.5.1 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/gorilla/mux v1.7.3
+	github.com/gorilla/websocket v1.4.1 // indirect
+	github.com/imkira/go-interpol v1.1.0 // indirect
+	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/rockspoon/go-common v1.0.18
 	github.com/rockspoon/rs.com.kitchen-display-model v1.1.1
 	github.com/rockspoon/rs.com.order-model v1.18.0
@@ -15,6 +20,14 @@ require (
 	github.com/rockspoon/rs.cor.middleware/v2 v2.4.3
 	github.com/rockspoon/rs.cor.venue-model/v4 v4.1.5
 	github.com/soajs/soajs.golang v1.0.4
+	github.com/stretchr/testify v1.4.0
+	github.com/valyala/fasthttp v1.6.0 // indirect
+	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
+	github.com/yalp/jsonpath v0.0.0-20180802001716-5cc68e5049a0 // indirect
+	github.com/yudai/gojsondiff v1.0.0 // indirect
+	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	go.mongodb.org/mongo-driver v1.1.2
 	golang.org/x/text v0.3.2
 )
+
+go 1.13

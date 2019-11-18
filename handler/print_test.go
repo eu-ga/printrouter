@@ -17,7 +17,7 @@ type ControllerMock struct {
 	Error   error
 }
 
-func (c ControllerMock) KitchenReceipt(request model.KitchenReceiptRequest, cData *mm.ContextData) (*model.Payload, error) {
+func (c ControllerMock) KitchenReceipt(request model.KitchenReceipt, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}

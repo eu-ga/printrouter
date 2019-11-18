@@ -26,7 +26,7 @@ func (m MockDeviceMS) GetDefaultPrinter(path, key string) (*d.Printer, error) {
 }
 
 func TestController_KitchenReceipt(t *testing.T) {
-	receipt := model.KitchenReceiptRequest{}.ToKitchenReceipt()
+	receipt := model.KitchenReceipt{}
 	cmdrs := kitchen.Generator{}.Generate(receipt, d.TSPPrinterType)
 	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
 
@@ -35,7 +35,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 		data         *s.ContextData
 		printer      *d.Printer
 		printerError error
-		request      model.KitchenReceiptRequest
+		request      model.KitchenReceipt
 		payload      *model.Payload
 		expErr       string
 	}{

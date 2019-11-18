@@ -15,7 +15,7 @@ import (
 )
 
 type printService interface {
-	// KitchenReceipt(request model.KitchenReceiptRequest, cData *mm.ContextData) (*model.Payload, error)
+	KitchenReceipt(request model.KitchenReceipt, cData *mm.ContextData) (*model.Payload, error)
 	TableBill(request model.Bill, cData *mm.ContextData) (*model.Payload, error)
 }
 
@@ -45,8 +45,8 @@ func newPrintRouter(service printService) printRouter {
 	router.Path("/delivery-takeout/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printDeliveryTakeoutReceipt)
 
-	// router.Path("/kitchen-order").
-	// 	Methods(http.MethodGet).HandlerFunc(handler.printKitchenOrder)
+	router.Path("/kitchen-order").
+		Methods(http.MethodGet).HandlerFunc(handler.printKitchenOrder)
 
 	router.Path("/qsr/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
@@ -173,12 +173,12 @@ func (handler printRouter) printDeliveryTakeoutReceipt(w http.ResponseWriter, r 
 }
 
 // nolint
-type kitchenReceiptRequest struct {
-	model.KitchenReceiptRequest
+type kitchenReceipt struct {
+	model.KitchenReceipt
 }
 
 // Build builds the create role JSONRequest.
-func (r *kitchenReceiptRequest) Build(req *http.Request) error {
+func (r *kitchenReceipt) Build(req *http.Request) error {
 	err := json.NewDecoder(req.Body).Decode(r)
 	defer util.CloseOrLog(req.Body)
 	if err != nil && err != io.EOF {
@@ -188,7 +188,7 @@ func (r *kitchenReceiptRequest) Build(req *http.Request) error {
 }
 
 // Validate validates the create role JSONRequest.
-func (r kitchenReceiptRequest) Validate() error {
+func (r kitchenReceipt) Validate() error {
 	return nil
 }
 
@@ -213,27 +213,27 @@ func (r kitchenReceiptRequest) Validate() error {
 //         description: printKitchenOrder response
 //         schema:
 //           $ref: "#/definitions/Payload"
-//
-// func (handler printRouter) printKitchenOrder(w http.ResponseWriter, r *http.Request) {
-// 	var req kitchenReceiptRequest
-// 	err := m.ParseRequest(r, &req)
-// 	if err != nil {
-// 		m.JSONError(w, err)
-// 		return
-// 	}
-// 	data, err := s.RequestContextData(r)
-// 	if err != nil {
-// 		m.JSONError(w, err)
-// 		return
-// 	}
 
-// 	result, err := handler.service.KitchenReceipt(req.KitchenReceiptRequest, data)
-// 	if err != nil {
-// 		m.JSONError(w, err)
-// 		return
-// 	}
-// 	m.JSONReturn(w, http.StatusOK, result)
-// }
+func (handler printRouter) printKitchenOrder(w http.ResponseWriter, r *http.Request) {
+	var req kitchenReceipt
+	err := m.ParseRequest(r, &req)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	data, err := s.RequestContextData(r)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+
+	result, err := handler.service.KitchenReceipt(req.KitchenReceipt, data)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	m.JSONReturn(w, http.StatusOK, result)
+}
 
 // swagger:operation GET /print/qsr/{id}/receipt Print printQSRReceipt
 // this endpoint returns a qsr receipt payload

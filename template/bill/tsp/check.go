@@ -17,16 +17,15 @@ func (gen CheckGenerator) Generate(bill model.Bill) []command.PrinterCommand {
 		cmdrs = template.AddRestaurantInfo(bill.Restaurant, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
 
-		cmdrs = template.AddServiceInfo(bill.AttendantName, bill.OrderType, bill.CreatedAt, check, cmdrs)
+		cmdrs = template.AddServiceInfoBill(bill.AttendantName, bill.OrderType, bill.CreatedAt, check, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
-		cmdrs = template.AddItems(check.Items, cmdrs)
+		cmdrs = template.AddItemsBill(check.Items, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
 		cmdrs = template.AddCheckTotal(check, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
 		cmdrs = template.Footer(cmdrs)
 		cmdrs = append(cmdrs, command.Cut{})
 	}
-	// Header
 
 	return cmdrs
 }

@@ -7,20 +7,6 @@ import (
 	money "github.com/rockspoon/rs.cor.common-money"
 )
 
-// TypesOfOrder is the type of order
-type TypesOfOrder string
-
-const (
-	// TypesOfOrderDinein represents dinein available sales option
-	TypesOfOrderDinein TypesOfOrder = "dinein"
-	// TypesOfOrderTakeout represents takeout available sales option
-	TypesOfOrderTakeout TypesOfOrder = "takeout"
-	// TypesOfOrderDelivery represents delivery available sales option
-	TypesOfOrderDelivery TypesOfOrder = "delivery"
-	// TypesOfOrderCatering represents catering available sales option
-	TypesOfOrderCatering TypesOfOrder = "catering"
-)
-
 // Bill is a collection of information that have to be printed in the bill
 type Bill struct {
 	Restaurant    RestaurantInfo
@@ -48,20 +34,6 @@ type Check struct {
 	Total    money.SimpleMoney // Subtotal + charge
 }
 
-// DineInOptions location about dinein
-type DineInOptions struct {
-	SectionName string
-	Tables      string
-	Seats       string
-}
-
-// CustomerInfo is info about customere
-type CustomerInfo struct {
-	Name    string
-	Address *address.Address // Used only on delivery
-	Phone   string
-}
-
 // EntryItem is an item
 type EntryItem struct {
 	Name       string
@@ -72,7 +44,7 @@ type EntryItem struct {
 	Weight     int //to be implemented (name to be decided, could be division)
 }
 
-// SubEntry is description of an ite
+// SubEntry is description of an item
 type SubEntry struct {
 	Name        string
 	Description string

@@ -2,79 +2,73 @@ package model
 
 import (
 	"time"
-
-	kModel "github.com/rockspoon/rs.com.kitchen-display-model/model"
 )
 
-// KitchenReceiptRequest print kitchen card request
-type KitchenReceiptRequest struct {
-	Card               kModel.Card `json:"card"`
-	Station            string      `json:"station"`
-	Language           string      `json:"language"`
-	IsPrintedForRunner bool        `json:"isPrintedForRunner"`
-	DeliveryAddress    string      `json:"deliveryAddress"`
-}
+type (
+	// TypesOfFire is a type of fire.
+	TypesOfFire string
+)
 
-// ToKitchenReceipt convert a print request into a printable model
-func (k KitchenReceiptRequest) ToKitchenReceipt() KitchenReceipt {
-	items := make([]KitchenItem, 0)
-	for i := 0; i < len(k.Card.Items); i++ {
-		name := ""
-		for _, title := range k.Card.Items[i].Title {
-			if title.Language == k.Language {
-				name = title.Value
-			}
-		}
-		seats := make([]string, 0)
-		for _, diner := range k.Card.Items[i].OrderItemMeta.Diner {
-			seats = append(seats, diner.Seat)
-		}
+const (
+	// TypesOfFireTogether is an order type together
+	TypesOfFireTogether TypesOfFire = "together"
+	// TypesOfFireAsReady is an order type as_ready
+	TypesOfFireAsReady TypesOfFire = "as_ready"
+	// TypesOfFireAddOn is an order type add_on
+	TypesOfFireAddOn TypesOfFire = "add_on"
+	// TypesOfFireRush is an order type rush
+	TypesOfFireRush TypesOfFire = "rush"
+	// TypesOfFireDont is an order type dont
+	TypesOfFireDont TypesOfFire = "dont"
+	// TypesOfFireTimedFire is an order type timed_fire
+	TypesOfFireTimedFire TypesOfFire = "timed_fire"
+	// TypesOfFireByCourse is an order type by_course
+	TypesOfFireByCourse TypesOfFire = "by_course"
+)
 
-		item := KitchenItem{
-			Name:       name,
-			Quantity:   1,
-			SeatNumber: seats,
-			IsAllSeats: k.Card.Items[i].OrderItemMeta.IsAllSeats,
-			IsSplit:    len(seats) > 1,
-			Modifiers:  k.Card.Items[i].OrderItemMeta.ItemMeta.Description[0].Value,
-		}
-		items = append(items, item)
+var (
+	// TypesOfFireMap converts a TypesOfFire to a printable string
+	TypesOfFireMap = map[TypesOfFire]string{
+		TypesOfFireTogether:  "Together",
+		TypesOfFireAsReady:   "Fire as Ready",
+		TypesOfFireAddOn:     "Addon",
+		TypesOfFireRush:      "Rush",
+		TypesOfFireDont:      "Don't",
+		TypesOfFireTimedFire: "Timed Fire",
+		TypesOfFireByCourse:  "By Course",
 	}
+)
 
-	return KitchenReceipt{
-		Server:             k.Card.OrderMeta.WaiterName,
-		Station:            k.Station,
-		FireType:           string(k.Card.OrderMeta.OrderType),
-		Timestamp:          k.Card.CreatedAt,
-		InvoiceNumber:      k.Card.ID.Hex(),
-		TableNumber:        k.Card.OrderMeta.TableNumber,
-		Items:              items,
-		IsPrintedForRunner: k.IsPrintedForRunner,
-		OrderType:          string(k.Card.OrderMeta.Type),
-		DeliveryAddress:    k.DeliveryAddress,
-	}
+// KitchenReceipt kitchen printable model
+type KitchenReceipt struct {
+	CreatedAt    time.Time
+	DineInInfo   *DineInKitchenInfo
+	CustomerInfo *CustomerInfo
+	OrderType    TypesOfOrder
+	Kitchen      string
+	Items        []KitchenItem
 }
 
 // KitchenItem ordered item printable model
 type KitchenItem struct {
 	Name       string
 	Quantity   int
-	SeatNumber []string
-	IsAllSeats bool
-	IsSplit    bool
-	Modifiers  string
+	Weight     int //to be implemented (name to be decided, could be division)
+	FireType   TypesOfFire
+	Seats      string
+	SubEntries []KitchenSubItem
 }
 
-// KitchenReceipt kitchen printable model
-type KitchenReceipt struct {
-	Server             string
-	Station            string
-	FireType           string
-	Timestamp          time.Time
-	InvoiceNumber      string
-	TableNumber        string
-	Items              []KitchenItem
-	IsPrintedForRunner bool
-	OrderType          string
-	DeliveryAddress    string
+// KitchenSubItem is a modifier for an item
+type KitchenSubItem struct {
+	Name        string
+	Description string
+	Index       int
+}
+
+// DineInKitchenInfo is the info to impress in the kitchen print
+type DineInKitchenInfo struct {
+	SectionName string
+	Tables      string
+	RunnerName  string
 }
