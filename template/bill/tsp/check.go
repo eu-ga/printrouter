@@ -17,7 +17,7 @@ func (gen CheckGenerator) Generate(bill model.Bill) []command.PrinterCommand {
 		cmdrs = template.AddRestaurantInfo(bill.Restaurant, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
 
-		cmdrs = template.AddServiceInfo(bill.AttendantName, bill.OrderType, check, cmdrs)
+		cmdrs = template.AddServiceInfo(bill.AttendantName, bill.OrderType, bill.CreatedAt, check, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)
 		cmdrs = template.AddItems(check.Items, cmdrs)
 		cmdrs = template.LineSeparator(cmdrs)

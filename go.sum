@@ -115,11 +115,13 @@ github.com/rockspoon/go-common v1.0.17 h1:+jjQ1OIIZWOxFFZnSroO+RNpCspvqSUoM18Z2l
 github.com/rockspoon/go-common v1.0.17/go.mod h1:og6cryssUt3r95Pp2LnltpbfRh7TD9GmaUtlNkxRsUE=
 github.com/rockspoon/go-common v1.0.18 h1:pK5Hgzxpoagn1LKK3VIkuSOsYN3ZfX1o1+hHJDaE9oM=
 github.com/rockspoon/go-common v1.0.18/go.mod h1:og6cryssUt3r95Pp2LnltpbfRh7TD9GmaUtlNkxRsUE=
+github.com/rockspoon/go-common v1.0.19 h1:F+9vGc73Yx1TY03UqOCSwnOtQ0ifTqHAIGHiwIZUrL0=
 github.com/rockspoon/notifier v1.3.0/go.mod h1:Vp/seW08YbpV0oDmHEKIjTAPhihebnAJHvivcWs93Ew=
 github.com/rockspoon/rs.com.kitchen-display-model v1.0.1 h1:6L+myaRTiIjXg+ojhSt6PwuGwJs3q1ABiPL2iXl4Pqs=
 github.com/rockspoon/rs.com.kitchen-display-model v1.0.1/go.mod h1:Slo0/71qnwysLz9IlXPsy8pqLWYX01fQD2AdE+BRJd8=
 github.com/rockspoon/rs.com.kitchen-display-model v1.1.1 h1:wCSBUzL/zDDB9jIycz+ivWcf6K/Zoqr12a1AfBndKNA=
 github.com/rockspoon/rs.com.kitchen-display-model v1.1.1/go.mod h1:hB9C+tc7i0nHBz3FNIggvth4TvqkHJSeHFKUrbQqoWM=
+github.com/rockspoon/rs.com.kitchen-display-model v1.4.6 h1:KdTDVdqkH1sdFrpWvIo3U7ODdxpSsc9Ru6670dxDvRI=
 github.com/rockspoon/rs.com.order-model v1.0.2 h1:tuzLqXm55yyjGgg9AkaXWwcbwCY4hjhHrRR51XCA1ao=
 github.com/rockspoon/rs.com.order-model v1.0.2/go.mod h1:9FDCzKvj7s1jtJNHIcqXt6OKCnpBhSy/6xXR9+MEYpE=
 github.com/rockspoon/rs.com.order-model v1.0.3 h1:c3aSai8Ud8zzuynesUXO/y2DCOG07BsnvXLlNF6liCs=
@@ -164,6 +166,7 @@ github.com/rockspoon/rs.cor.device-model v0.0.0-20190617160544-e9be4308513b h1:k
 github.com/rockspoon/rs.cor.device-model v0.0.0-20190617160544-e9be4308513b/go.mod h1:FTlbMdfKOz5Oh2bUr9PqPdcA1reFUkfcNCLPem+OxQA=
 github.com/rockspoon/rs.cor.device-model v1.3.0 h1:g3gZKPIrLUvNkv6DEXcnjXQA80Ug/8pX+Nr+UGzl7EQ=
 github.com/rockspoon/rs.cor.device-model v1.3.0/go.mod h1:gPnV8QpuICBT8c3gFZkv08ofCZxVbDtE62KCw/LYxcM=
+github.com/rockspoon/rs.cor.device-model v1.16.0 h1:8i9Kc5ZWH8WUg8XMO8DgNLrCFFesYm++lnYtEh6grIw=
 github.com/rockspoon/rs.cor.floor-plan-model v1.4.3/go.mod h1:IFC2q34HUEio2uIviIFmz8rz3eZRqnTlOcdRN/AXLhY=
 github.com/rockspoon/rs.cor.middleware v0.0.0-20190523141708-ba55bfb22098/go.mod h1:HzP9se1o7bkuD00yjuOxyDiV8+usgtCDhlMscgAYiQs=
 github.com/rockspoon/rs.cor.middleware v0.0.0-20190612210016-0027d6a9e545 h1:Ev5qtee5sfVoHvF7jX4vxxHcon0K1M1qrfTygbRJAb4=
@@ -294,6 +297,7 @@ golang.org/x/net v0.0.0-20190213061140-3a22650c66bd h1:HuTn7WObtcDo9uEEU7rEqL0jY
 golang.org/x/net v0.0.0-20190213061140-3a22650c66bd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190311183353-d8887717615a/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
+golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c h1:uOCk1iQW6Vc18bnC13MfzScl+wdKBmM9Y9kU7Z83/lw=
 golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20181017192945-9dcd33a902f4/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=

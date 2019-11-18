@@ -113,9 +113,9 @@ func AddItems(entryItems []model.EntryItem, commands []command.PrinterCommand) [
 }
 
 // AddServiceInfo adds Table Information
-func AddServiceInfo(attendantName string, orderType model.TypesOfOrder, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
+func AddServiceInfo(attendantName string, orderType model.TypesOfOrder, createdAt time.Time, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands,
-		command.Text(time.Now().Format(dateFormat)),
+		command.Text(createdAt.Format(dateFormat)),
 		command.NewLine{},
 		command.Text(fmt.Sprintf(serverLineFormat, attendantName)),
 		command.NewLine{},

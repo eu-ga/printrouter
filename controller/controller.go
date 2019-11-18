@@ -51,13 +51,12 @@ func (c PrintController) KitchenReceipt(request model.KitchenReceiptRequest, cDa
 }
 
 // TableBill prionts a table bill
-func (c PrintController) TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c PrintController) TableBill(bill model.Bill, cData *s.ContextData) (*model.Payload, error) {
 	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
 	if err != nil {
 		return nil, err
 	}
 
-	bill := request.ToBill()
 	commands := c.TableBillGenerator.Generate(bill, printer.PrinterSettings.PrinterType)
 
 	payload := model.Payload{

@@ -24,7 +24,7 @@ func (c ControllerMock) KitchenReceipt(request model.KitchenReceiptRequest, cDat
 	return c.Payload, nil
 }
 
-func (c ControllerMock) TableBill(request model.TableBillRequest, cData *mm.ContextData) (*model.Payload, error) {
+func (c ControllerMock) TableBill(request model.Bill, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}

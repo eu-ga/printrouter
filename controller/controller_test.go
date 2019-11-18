@@ -78,7 +78,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 }
 
 func TestController_TableBill(t *testing.T) {
-	bill := model.TableBillRequest{}.ToBill()
+	bill := model.Bill{}
 	cmdrs := b.Generator{}.Generate(bill, d.TSPPrinterType)
 	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
 
@@ -87,7 +87,7 @@ func TestController_TableBill(t *testing.T) {
 		data         *s.ContextData
 		printer      *d.Printer
 		printerError error
-		request      model.TableBillRequest
+		bill         model.Bill
 		payload      *model.Payload
 		expErr       string
 	}{
@@ -118,7 +118,7 @@ func TestController_TableBill(t *testing.T) {
 			deviceMS := MockDeviceMS{Printer: tc.printer, Error: tc.printerError}
 			controller := NewPrintController(deviceMS)
 
-			payload, err := controller.TableBill(tc.request, tc.data)
+			payload, err := controller.TableBill(tc.bill, tc.data)
 			if tc.name == "success" {
 				require.NoError(t, err)
 				require.Equal(t, tc.payload, payload)

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/rockspoon/rs.cor.common-model/address"
 	money "github.com/rockspoon/rs.cor.common-money"
 )
@@ -24,6 +26,7 @@ type Bill struct {
 	Restaurant    RestaurantInfo
 	OrderType     TypesOfOrder
 	AttendantName string // Can be the waiter in dineIn or the person who answered the phone in Delivery and takeout
+	CreatedAt     time.Time
 	Checks        []Check
 }
 
