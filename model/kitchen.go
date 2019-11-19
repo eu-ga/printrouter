@@ -56,14 +56,27 @@ type KitchenItem struct {
 	Weight     int //to be implemented (name to be decided, could be division)
 	FireType   TypesOfFire
 	Seats      string
-	SubEntries []KitchenSubItem
+	SubEntries KitchenSubEntrySlice
 }
 
-// KitchenSubItem is a modifier for an item
-type KitchenSubItem struct {
+// KitchenSubEntry is a modifier for an item
+type KitchenSubEntry struct {
 	Name        string
 	Description string
 	Index       int
+}
+
+// KitchenSubEntrySlice implements sort.Interface based on Index
+type KitchenSubEntrySlice []KitchenSubEntry
+
+func (s KitchenSubEntrySlice) Len() int {
+	return len(s)
+}
+func (s KitchenSubEntrySlice) Less(i, j int) bool {
+	return s[i].Index < s[j].Index
+}
+func (s KitchenSubEntrySlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 // DineInKitchenInfo is the info to impress in the kitchen print

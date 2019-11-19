@@ -61,18 +61,21 @@ func getBill() model.Bill {
 		Name:       "Carne Vegetariana",
 		UnityPrice: moneyInReal(10),
 		FinalPrice: moneyInReal(10),
+		Index:      3,
 	}
 
 	modifierB := model.SubEntry{
 		Name:       "Sem molho especial",
 		UnityPrice: moneyInReal(-1.5),
 		FinalPrice: moneyInReal(-4.5),
+		Index:      2,
 	}
 
 	modifierC := model.SubEntry{
 		Name:       "Bacon Extra",
 		UnityPrice: moneyInReal(2),
 		FinalPrice: moneyInReal(6),
+		Index:      1,
 	}
 
 	item1 := model.EntryItem{
@@ -111,17 +114,20 @@ func getBill() model.Bill {
 	charge1 := model.SubEntry{
 		Name:        "Imposto",
 		Description: "10%",
-		FinalPrice:  moneyInReal(4.8),
+		Index:       3,
+		FinalPrice:  moneyInReal(3.8),
 	}
 
 	charge2 := model.SubEntry{
 		Name:       "Desconto fidelidade",
+		Index:      2,
 		FinalPrice: moneyInReal(-10),
 	}
 
 	charge3 := model.SubEntry{
 		Name:        "Imposto",
 		Description: "10%",
+		Index:       1,
 		FinalPrice:  moneyInReal(12.1),
 	}
 
@@ -130,7 +136,7 @@ func getBill() model.Bill {
 		Items:         []model.EntryItem{item1, item2},
 		Subtotal:      moneyInReal(48),
 		Charges:       []model.SubEntry{charge1, charge2},
-		Total:         moneyInReal(42.8),
+		Total:         moneyInReal(41.8),
 	}
 
 	check2 := model.Check{

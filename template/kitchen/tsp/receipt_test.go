@@ -34,29 +34,29 @@ func getReceipt() model.KitchenReceipt {
 		RunnerName:  "Alberto",
 	}
 
-	modifierA := model.KitchenSubItem{
+	modifierA := model.KitchenSubEntry{
 		Name: "Carne Vegetariana",
 	}
 
-	modifierB := model.KitchenSubItem{
+	modifierB := model.KitchenSubEntry{
 		Name: "Sem molho especial",
 	}
 
-	modifierC := model.KitchenSubItem{
+	modifierC := model.KitchenSubEntry{
 		Name: "Bacon Extra",
 	}
 
 	item1 := model.KitchenItem{
 		Name:       "ChessBurger",
 		Quantity:   1,
-		SubEntries: []model.KitchenSubItem{modifierA},
+		SubEntries: []model.KitchenSubEntry{modifierA},
 		FireType:   model.TypesOfFireTogether,
 		Seats:      "3",
 	}
 	item2 := model.KitchenItem{
 		Name:       "Suco de Laranja com frutas da estação",
 		Quantity:   2,
-		SubEntries: []model.KitchenSubItem{},
+		SubEntries: []model.KitchenSubEntry{},
 		FireType:   model.TypesOfFireAsReady,
 		Seats:      "1, 5",
 	}
@@ -65,7 +65,7 @@ func getReceipt() model.KitchenReceipt {
 		Name:       "Hamburger super crocante fenomenal da casa suiça",
 		Quantity:   1,
 		Weight:     1,
-		SubEntries: []model.KitchenSubItem{modifierB, modifierC},
+		SubEntries: []model.KitchenSubEntry{modifierB, modifierC},
 		FireType:   model.TypesOfFireTogether,
 		Seats:      "3",
 	}
@@ -74,7 +74,7 @@ func getReceipt() model.KitchenReceipt {
 		Name:       "Batata frita",
 		Quantity:   3,
 		Weight:     1,
-		SubEntries: []model.KitchenSubItem{modifierB},
+		SubEntries: []model.KitchenSubEntry{modifierB},
 		FireType:   model.TypesOfFireRush,
 		Seats:      "1, 2, 4",
 	}

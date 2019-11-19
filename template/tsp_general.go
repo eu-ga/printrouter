@@ -2,6 +2,7 @@ package template
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/rockspoon/rs.cor.printer-ms/command"
@@ -64,6 +65,7 @@ func AddRestaurantInfo(info model.RestaurantInfo, commands []command.PrinterComm
 // AddCheckTotal adds pricing information
 func AddCheckTotal(check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.Text(fmt.Sprintf(totalsFormat, "Subtotal:", check.Subtotal.Symbol, check.Subtotal.Price)))
+	sort.Sort(check.Charges)
 	for _, charge := range check.Charges {
 		title := charge.Name
 		if charge.Description != "" {
@@ -96,6 +98,8 @@ func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterComman
 			commands = append(commands, command.Text(line))
 		}
 
+		sort.Sort(item.SubEntries)
+
 		for _, subEntry := range item.SubEntries {
 			title := subEntry.Name
 			if subEntry.Description != "" {
@@ -119,6 +123,9 @@ func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, crea
 		command.Text(createdAt.Format(dateFormat)),
 		command.NewLine{},
 		command.Text("Attendant: "+attendantName),
+		command.NewLine{},
+		command.NewLine{},
+		command.Text("Order Type: "+model.TypesOfOrderMap[orderType]),
 		command.NewLine{},
 	)
 
@@ -153,7 +160,7 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 		command.NewLine{},
 		command.Text("Kitchen: "+receipt.Kitchen),
 		command.NewLine{},
-		command.Text("Order Type: "+receipt.OrderType),
+		command.Text("Order Type: "+model.TypesOfOrderMap[receipt.OrderType]),
 		command.NewLine{},
 		command.NewLine{},
 	)
@@ -196,6 +203,7 @@ func AddItemsKitchen(kitchenItems []model.KitchenItem, commands []command.Printe
 			commands = append(commands, command.Text(line))
 		}
 
+		sort.Sort(item.SubEntries)
 		for _, subEntry := range item.SubEntries {
 			title := subEntry.Name
 			if subEntry.Description != "" {

@@ -29,3 +29,13 @@ type CustomerInfo struct {
 	Address *address.Address // Used only on delivery
 	Phone   string
 }
+
+var (
+	// TypesOfOrderMap converts a TypesOfOrder to a printable string
+	TypesOfOrderMap = map[TypesOfOrder]string{
+		TypesOfOrderDinein:   "Dine-in",
+		TypesOfOrderTakeout:  "Takeout",
+		TypesOfOrderDelivery: "Delivery",
+		TypesOfOrderCatering: "Catering",
+	}
+)

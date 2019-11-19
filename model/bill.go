@@ -30,7 +30,7 @@ type Check struct {
 
 	Items    []EntryItem
 	Subtotal money.SimpleMoney // Sum of all items finalPrices + subEntries finalPrices
-	Charges  []SubEntry
+	Charges  SubEntrySlice
 	Total    money.SimpleMoney // Subtotal + charge
 }
 
@@ -40,7 +40,7 @@ type EntryItem struct {
 	Quantity   int
 	UnityPrice money.SimpleMoney
 	FinalPrice money.SimpleMoney // UnityPrice * quantity
-	SubEntries []SubEntry
+	SubEntries SubEntrySlice
 	Weight     int //to be implemented (name to be decided, could be division)
 }
 
@@ -51,4 +51,17 @@ type SubEntry struct {
 	Index       int               // Order to exhibite the subEntry
 	UnityPrice  money.SimpleMoney // Can be zero if only the finalPrice matters
 	FinalPrice  money.SimpleMoney // UnityPrice * quantity of entry item
+}
+
+// SubEntrySlice implements sort.Interface based on Index
+type SubEntrySlice []SubEntry
+
+func (s SubEntrySlice) Len() int {
+	return len(s)
+}
+func (s SubEntrySlice) Less(i, j int) bool {
+	return s[i].Index < s[j].Index
+}
+func (s SubEntrySlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
