@@ -3,7 +3,6 @@ package converter
 import (
 	"encoding/base64"
 
-	d "github.com/rockspoon/rs.cor.device-model/model"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 )
 
@@ -18,9 +17,9 @@ func NewByteCodeGenerator() ByteCodeGenerator {
 }
 
 // Convert convert a list of commands into a base64 encoded string
-func (b ByteCodeGenerator) Convert(commands []command.PrinterCommand, printerType d.PrinterType) string {
+func (b ByteCodeGenerator) Convert(commands []command.PrinterCommand, printerType string) string {
 	var bytes []byte
-	if printerType == d.TSPPrinterType {
+	if printerType == "TSPP" {
 		bytes = b.TSPConverter.GenerateByteCode(commands)
 	}
 	return base64.StdEncoding.EncodeToString(bytes)

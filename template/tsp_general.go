@@ -175,7 +175,7 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 			command.Text("Tables: "+receipt.DineInInfo.Tables),
 			command.NewLine{},
 		)
-	} else {
+	} else if receipt.OrderType == model.TypesOfOrderDelivery || receipt.OrderType == model.TypesOfOrderTakeout {
 		commands = append(commands,
 			command.Text("Customer: "+receipt.CustomerInfo.Name),
 			command.NewLine{},

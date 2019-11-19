@@ -38,10 +38,10 @@ func (c PrintController) KitchenReceipt(receipt model.KitchenReceipt, cData *s.C
 		return nil, err
 	}
 
-	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterSettings.PrinterType)
+	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterModel)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterSettings.PrinterType),
+		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Kitchen Receipt",
@@ -56,10 +56,10 @@ func (c PrintController) TableBill(bill model.Bill, cData *s.ContextData) (*mode
 		return nil, err
 	}
 
-	commands := c.TableBillGenerator.Generate(bill, printer.PrinterSettings.PrinterType)
+	commands := c.TableBillGenerator.Generate(bill, printer.PrinterModel)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterSettings.PrinterType),
+		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Table Bill",

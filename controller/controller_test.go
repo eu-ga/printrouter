@@ -27,8 +27,8 @@ func (m MockDeviceMS) GetDefaultPrinter(path, key string) (*d.Printer, error) {
 
 func TestController_KitchenReceipt(t *testing.T) {
 	receipt := model.KitchenReceipt{}
-	cmdrs := kitchen.Generator{}.Generate(receipt, d.TSPPrinterType)
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
+	cmdrs := kitchen.Generator{}.Generate(receipt, "TSPP")
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
 		name         string
@@ -51,13 +51,13 @@ func TestController_KitchenReceipt(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
+			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
 			data: &s.ContextData{
 				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
-			payload: &model.Payload{IPAddress: "123", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Kitchen Receipt"},
+			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Kitchen Receipt"},
 		},
 	}
 
@@ -79,8 +79,8 @@ func TestController_KitchenReceipt(t *testing.T) {
 
 func TestController_TableBill(t *testing.T) {
 	bill := model.Bill{}
-	cmdrs := b.Generator{}.Generate(bill, d.TSPPrinterType)
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
+	cmdrs := b.Generator{}.Generate(bill, "TSPP")
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
 		name         string
@@ -103,13 +103,13 @@ func TestController_TableBill(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
+			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
 			data: &s.ContextData{
 				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
-			payload: &model.Payload{IPAddress: "123", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
+			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
 		},
 	}
 
