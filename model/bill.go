@@ -41,7 +41,7 @@ type EntryItem struct {
 	UnityPrice money.SimpleMoney
 	FinalPrice money.SimpleMoney // UnityPrice * quantity
 	SubEntries SubEntrySlice
-	Weight     int //to be implemented (name to be decided, could be division)
+	Weight     int // TODO to be implemented (name to be decided, could be division)
 }
 
 // SubEntry is description of an item

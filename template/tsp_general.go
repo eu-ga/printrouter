@@ -86,8 +86,10 @@ func AddCheckTotal(check model.Check, commands []command.PrinterCommand) []comma
 
 // AddItemsBill add items
 func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterCommand) []command.PrinterCommand {
-	commands = append(commands, command.Text("                         Unity   Final\n"))
-	commands = append(commands, command.Text("QTY Item                 Price   Price\n"))
+	commands = append(commands,
+		command.Text("                         Unity   Final\n"),
+		command.Text("QTY Item                 Price   Price\n"),
+	)
 
 	for _, item := range entryItems {
 		itemName := helper.WarpString(item.Name, 16)
@@ -147,7 +149,7 @@ func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, crea
 			command.NewLine{},
 		)
 		if check.CustomerInfo.Address != nil {
-			commands = append(commands, command.Text("Address: "+check.CustomerInfo.Address.Address1), command.NewLine{})
+			commands = append(commands, command.Text("Address: "+check.CustomerInfo.Address.Address1+", "+check.CustomerInfo.Address.Address1), command.NewLine{})
 		}
 	}
 	return commands
@@ -175,16 +177,6 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 			command.Text("Tables: "+receipt.DineInInfo.Tables),
 			command.NewLine{},
 		)
-	} else if receipt.OrderType == model.TypesOfOrderDelivery || receipt.OrderType == model.TypesOfOrderTakeout {
-		commands = append(commands,
-			command.Text("Customer: "+receipt.CustomerInfo.Name),
-			command.NewLine{},
-			command.Text("Phone number: "+receipt.CustomerInfo.Phone),
-			command.NewLine{},
-		)
-		if receipt.CustomerInfo.Address != nil {
-			commands = append(commands, command.Text("Address: "+receipt.CustomerInfo.Address.Address1), command.NewLine{})
-		}
 	}
 
 	return commands
@@ -218,8 +210,10 @@ func AddItemsKitchen(kitchenItems []model.KitchenItem, commands []command.Printe
 			}
 		}
 
-		commands = append(commands, command.Text(" Seats: "+item.Seats))
-		commands = append(commands, command.Text("\n\n---\n"))
+		commands = append(commands,
+			command.Text(" Seats: "+item.Seats),
+			command.Text("\n\n---\n"),
+		)
 	}
 	commands = commands[:len(commands)-1]
 	return commands

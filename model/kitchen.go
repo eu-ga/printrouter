@@ -53,7 +53,7 @@ type KitchenReceipt struct {
 type KitchenItem struct {
 	Name       string
 	Quantity   int
-	Weight     int //to be implemented (name to be decided, could be division)
+	Weight     int // TODO to be implemented (name to be decided, could be division)
 	FireType   TypesOfFire
 	Seats      string
 	SubEntries KitchenSubEntrySlice
