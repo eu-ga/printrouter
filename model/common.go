@@ -18,16 +18,16 @@ const (
 
 // DineInOptions location about dinein
 type DineInOptions struct {
-	SectionName string
-	Tables      string
-	Seats       string
+	SectionName string `json:"sectionName"`
+	Tables      string `json:"tables"`
+	Seats       string `json:"seats"`
 }
 
 // CustomerInfo is info about customere
 type CustomerInfo struct {
-	Name    string
-	Address *address.Address // Used only on delivery
-	Phone   string
+	Name    string           `json:"name"`
+	Address *address.Address `json:"address,omitempty"`
+	Phone   string           `json:"phone"`
 }
 
 var (

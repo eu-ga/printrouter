@@ -180,7 +180,7 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 
 	if receipt.OrderType == model.TypesOfOrderDinein {
 		commands = append(commands,
-			command.Text("Runner: "+receipt.DineInInfo.RunnerName),
+			command.Text("Waiter: "+receipt.DineInInfo.RunnerName),
 			command.NewLine{},
 			command.Text("Section: "+receipt.DineInInfo.SectionName),
 			command.NewLine{},
@@ -205,14 +205,9 @@ func AddItemsKitchen(kitchenItems []model.KitchenItem, commands []command.Printe
 			commands = append(commands, command.Text(line))
 		}
 
-		sort.Sort(item.SubEntries)
-		for _, subEntry := range item.SubEntries {
-			title := subEntry.Name
-			if subEntry.Description != "" {
-				title = title + "(" + subEntry.Description + ")"
-			}
-			subEntryName := helper.WarpString(title, 16)
-			line := fmt.Sprintf(kitchenSubEntryFormat, subEntryName[0])
+		if item.SubEntries != "" {
+			subEntryName := helper.WarpString(item.SubEntries, 27)
+			line = fmt.Sprintf(kitchenSubEntryFormat, subEntryName[0])
 			commands = append(commands, command.Text(line))
 			for i := range subEntryName[1:] {
 				line = fmt.Sprintf(subEntryLine2Format, subEntryName[i+1])

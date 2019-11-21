@@ -9,48 +9,48 @@ import (
 
 // Bill is a collection of information that have to be printed in the bill
 type Bill struct {
-	Restaurant    RestaurantInfo
-	OrderType     TypesOfOrder
-	AttendantName string // Can be the waiter in dineIn or the person who answered the phone in Delivery and takeout
-	CreatedAt     time.Time
-	Checks        []Check
+	Restaurant    RestaurantInfo `json:"restaurant"`
+	OrderType     TypesOfOrder   `json:"orderType"`
+	AttendantName string         `json:"attendantName"`
+	CreatedAt     time.Time      `json:"createdAt"`
+	Checks        []Check        `json:"checks"`
 }
 
 // RestaurantInfo is the info about the restaurant
 type RestaurantInfo struct {
-	Name    string
-	Address address.Address
-	Phone   *string
+	Name    string          `json:"name"`
+	Address address.Address `json:"address"`
+	Phone   *string         `json:"phone,omitempty"`
 }
 
 // Check to be printed
 type Check struct {
-	DineInOptions *DineInOptions // Used only on DineIn
-	CustomerInfo  *CustomerInfo  // Used only on delivery e takeout
+	DineInOptions *DineInOptions `json:"dineInOptions,omitempty"`
+	CustomerInfo  *CustomerInfo  `json:"customerInfo,omitempty"`
 
-	Items    []EntryItem
-	Subtotal money.SimpleMoney // Sum of all items finalPrices + subEntries finalPrices
-	Charges  SubEntrySlice
-	Total    money.SimpleMoney // Subtotal + charge
+	Items    []EntryItem       `json:"items"`
+	Subtotal money.SimpleMoney `json:"subtotal"`
+	Charges  SubEntrySlice     `json:"charges"`
+	Total    money.SimpleMoney `json:"total"`
 }
 
 // EntryItem an item in the bill
 type EntryItem struct {
-	Name       string
-	Quantity   int
-	UnityPrice money.SimpleMoney
-	FinalPrice money.SimpleMoney // UnityPrice * quantity
-	SubEntries SubEntrySlice
-	Weight     int // TODO to be implemented (name to be decided, could be division)
+	Name       string            `json:"name"`
+	Quantity   int               `json:"quantity"`
+	UnityPrice money.SimpleMoney `json:"unityPrice"`
+	FinalPrice money.SimpleMoney `json:"finalPrice"`
+	SubEntries SubEntrySlice     `json:"subEntries"`
+	Weight     int               `json:"weight"`
 }
 
 // SubEntry is description of an item
 type SubEntry struct {
-	Name        string
-	Description string
-	Index       int               // Order to exhibite the subEntry
-	UnityPrice  money.SimpleMoney // Can be zero if only the finalPrice matters
-	FinalPrice  money.SimpleMoney // UnityPrice * quantity of entry item
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Index       int               `json:"index"`
+	UnityPrice  money.SimpleMoney `json:"unityPrice"`
+	FinalPrice  money.SimpleMoney `json:"finalPrice"`
 }
 
 // SubEntrySlice implements sort.Interface based on Index

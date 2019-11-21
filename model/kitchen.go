@@ -41,47 +41,27 @@ var (
 
 // KitchenReceipt kitchen printable model
 type KitchenReceipt struct {
-	CreatedAt    time.Time
-	DineInInfo   *DineInKitchenInfo
-	CustomerInfo *CustomerInfo
-	OrderType    TypesOfOrder
-	Kitchen      string
-	Items        []KitchenItem
+	CreatedAt    time.Time          `json:"createdAt"`
+	DineInInfo   *DineInKitchenInfo `json:"dinerInfo,omitempty"`
+	CustomerInfo *CustomerInfo      `json:"customerInfo,omitempty"`
+	OrderType    TypesOfOrder       `json:"orderInfo"`
+	Kitchen      string             `json:"kitchen"`
+	Items        []KitchenItem      `json:"items"`
 }
 
 // KitchenItem ordered item printable model
 type KitchenItem struct {
-	Name       string
-	Quantity   int
-	Weight     int // TODO to be implemented (name to be decided, could be division)
-	FireType   TypesOfFire
-	Seats      string
-	SubEntries KitchenSubEntrySlice
-}
-
-// KitchenSubEntry is a modifier for an item
-type KitchenSubEntry struct {
-	Name        string
-	Description string
-	Index       int
-}
-
-// KitchenSubEntrySlice implements sort.Interface based on Index
-type KitchenSubEntrySlice []KitchenSubEntry
-
-func (s KitchenSubEntrySlice) Len() int {
-	return len(s)
-}
-func (s KitchenSubEntrySlice) Less(i, j int) bool {
-	return s[i].Index < s[j].Index
-}
-func (s KitchenSubEntrySlice) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
+	Name       string      `json:"name"`
+	Quantity   int         `json:"quantity"`
+	Weight     int         `json:"weight"`
+	FireType   TypesOfFire `json:"fireType"`
+	Seats      string      `json:"seats"`
+	SubEntries string      `json:"subEntries"`
 }
 
 // DineInKitchenInfo is the info to impress in the kitchen print
 type DineInKitchenInfo struct {
-	SectionName string
-	Tables      string
-	RunnerName  string
+	SectionName string `json:"SectionName"`
+	Tables      string `json:"Tables"`
+	RunnerName  string `json:"RunnerName"`
 }
