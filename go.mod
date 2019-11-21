@@ -6,7 +6,6 @@ require (
 	github.com/rockspoon/go-common v1.0.19
 	github.com/rockspoon/rs.com.kitchen-display-model v1.1.1
 	github.com/rockspoon/rs.com.order-model v1.20.0
-	github.com/rockspoon/rs.com.ordering-ms v0.0.0-20191118222847-be98c9a18879
 	github.com/rockspoon/rs.cor.common-model v1.8.7
 	github.com/rockspoon/rs.cor.common-money v1.6.0
 	github.com/rockspoon/rs.cor.common-request v1.1.1

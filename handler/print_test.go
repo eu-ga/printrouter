@@ -95,7 +95,7 @@ func TestRouter_KitchenReceipt(t *testing.T) {
 				},
 				Reporter: httpexpect.NewAssertReporter(t),
 			})
-			e.GET("/kitchen-order").
+			e.GET("/kitchen-card").
 				WithText(tc.request).
 				Expect().
 				Status(tc.expectedCode).
