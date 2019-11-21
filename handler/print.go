@@ -45,8 +45,8 @@ func newPrintRouter(service printService) printRouter {
 	router.Path("/delivery-takeout/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printDeliveryTakeoutReceipt)
 
-	router.Path("/kitchen-order").
-		Methods(http.MethodGet).HandlerFunc(handler.printKitchenOrder)
+	router.Path("/kitchen-card").
+		Methods(http.MethodGet).HandlerFunc(handler.printKitchenCard)
 
 	router.Path("/qsr/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
@@ -192,7 +192,7 @@ func (r kitchenReceipt) Validate() error {
 	return nil
 }
 
-// swagger:operation GET /print/kitchen-order Print printKitchenOrder
+// swagger:operation GET /print/kitchen-card Print printKitchenCard
 // this endpoint returns a kitchen order ticket
 // ---
 //     Consumes:
@@ -210,11 +210,11 @@ func (r kitchenReceipt) Validate() error {
 //
 //     Responses:
 //       '200':
-//         description: printKitchenOrder response
+//         description: printKitchenCard response
 //         schema:
 //           $ref: "#/definitions/Payload"
 
-func (handler printRouter) printKitchenOrder(w http.ResponseWriter, r *http.Request) {
+func (handler printRouter) printKitchenCard(w http.ResponseWriter, r *http.Request) {
 	var req kitchenReceipt
 	err := m.ParseRequest(r, &req)
 	if err != nil {
