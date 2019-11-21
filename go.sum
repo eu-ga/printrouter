@@ -143,7 +143,9 @@ github.com/rockspoon/rs.com.order-model v1.17.0/go.mod h1:s75WGJ0Ub2bs/6OmgJPV54
 github.com/rockspoon/rs.com.order-model v1.18.0 h1:c2PH0xjqEw6JD10PftlL5MX1Ml9n+h/7w3OlQqdw8N4=
 github.com/rockspoon/rs.com.order-model v1.18.0/go.mod h1:s75WGJ0Ub2bs/6OmgJPV54fMrtsj4sh/7pN7M7Q8ldc=
 github.com/rockspoon/rs.com.order-model v1.19.0 h1:hcD0o0rLjZcozqHYaKS5FcMLPmdtKfhuvokA6VTppU4=
+github.com/rockspoon/rs.com.order-model v1.20.0 h1:QXRKLi6dNElSOb9ggiMXEe9p/RihD/pe4ujkoj0HZtw=
 github.com/rockspoon/rs.com.order-model v1.20.0/go.mod h1:s75WGJ0Ub2bs/6OmgJPV54fMrtsj4sh/7pN7M7Q8ldc=
+github.com/rockspoon/rs.com.order-model v1.21.1 h1:ToBhIOCAWGj9OIQwLCE2ZTyJnNUkoYJoxW+abohBXjw=
 github.com/rockspoon/rs.com.ordering-ms v0.0.0-20191112155430-e23afe4b62fa h1:3aYpqG+4GFFRiI4xgivpVML8d3yWkN2bVbssi46Umw0=
 github.com/rockspoon/rs.com.ordering-ms v0.0.0-20191112155430-e23afe4b62fa/go.mod h1:0plwmaE3Ynv8A6lXDR7S7FPTjvzGNd+nMHkUA+dYcR0=
 github.com/rockspoon/rs.com.ordering-ms v0.0.0-20191118222847-be98c9a18879 h1:aZzUhvnhliKyYJNEylkJ6CBs21JoiQhJgs18SU5mKrw=

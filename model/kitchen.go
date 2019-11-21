@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/rockspoon/rs.com.order-model/model"
 )
 
 type (
@@ -44,7 +46,7 @@ type KitchenReceipt struct {
 	CreatedAt    time.Time          `json:"createdAt"`
 	DineInInfo   *DineInKitchenInfo `json:"dinerInfo,omitempty"`
 	CustomerInfo *CustomerInfo      `json:"customerInfo,omitempty"`
-	OrderType    TypesOfOrder       `json:"orderInfo"`
+	OrderType    model.OrderType    `json:"orderInfo"`
 	Kitchen      string             `json:"kitchen"`
 	Items        []KitchenItem      `json:"items"`
 }

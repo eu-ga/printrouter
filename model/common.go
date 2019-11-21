@@ -1,19 +1,8 @@
 package model
 
-import "github.com/rockspoon/rs.cor.common-model/address"
-
-// TypesOfOrder is the type of order
-type TypesOfOrder string
-
-const (
-	// TypesOfOrderDinein represents dinein available sales option
-	TypesOfOrderDinein TypesOfOrder = "dinein"
-	// TypesOfOrderTakeout represents takeout available sales option
-	TypesOfOrderTakeout TypesOfOrder = "takeout"
-	// TypesOfOrderDelivery represents delivery available sales option
-	TypesOfOrderDelivery TypesOfOrder = "delivery"
-	// TypesOfOrderCatering represents catering available sales option
-	TypesOfOrderCatering TypesOfOrder = "catering"
+import (
+	"github.com/rockspoon/rs.com.order-model/model"
+	"github.com/rockspoon/rs.cor.common-model/address"
 )
 
 // DineInOptions location about dinein
@@ -32,10 +21,10 @@ type CustomerInfo struct {
 
 var (
 	// TypesOfOrderMap converts a TypesOfOrder to a printable string
-	TypesOfOrderMap = map[TypesOfOrder]string{
-		TypesOfOrderDinein:   "Dine-in",
-		TypesOfOrderTakeout:  "Takeout",
-		TypesOfOrderDelivery: "Delivery",
-		TypesOfOrderCatering: "Catering",
+	TypesOfOrderMap = map[model.OrderType]string{
+		model.OrderTypeDineIn:   "Dine-in",
+		model.OrderTypeQSR:      "Takeout",
+		model.OrderTypeDelivery: "Delivery",
+		model.OrderTypeTakeout:  "Catering",
 	}
 )

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	orderModel "github.com/rockspoon/rs.com.order-model/model"
 	"github.com/rockspoon/rs.cor.printer-ms/helper"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	"github.com/stretchr/testify/require"
@@ -68,7 +69,7 @@ func getReceipt() model.KitchenReceipt {
 
 	receipt := model.KitchenReceipt{
 		DineInInfo: &tableInfoAlberto,
-		OrderType:  model.TypesOfOrderDinein,
+		OrderType:  orderModel.OrderTypeDineIn,
 		Kitchen:    "Hot dishes",
 		Items:      []model.KitchenItem{item1, item2, item3, item4},
 	}

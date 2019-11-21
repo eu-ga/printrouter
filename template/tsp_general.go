@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	orderModel "github.com/rockspoon/rs.com.order-model/model"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 	"github.com/rockspoon/rs.cor.printer-ms/helper"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
@@ -132,7 +133,7 @@ func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterComman
 }
 
 // AddServiceInfoBill adds information about the table or about the customer
-func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, createdAt time.Time, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
+func AddServiceInfoBill(attendantName string, orderType orderModel.OrderType, createdAt time.Time, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands,
 		command.Text(createdAt.Format(dateFormat)),
 		command.NewLine{},
@@ -143,7 +144,7 @@ func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, crea
 		command.NewLine{},
 	)
 
-	if orderType == model.TypesOfOrderDinein {
+	if orderType == orderModel.OrderTypeDineIn {
 		commands = append(commands,
 			command.Text("Section: "+check.DineInOptions.SectionName),
 			command.NewLine{},
@@ -178,7 +179,7 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 		command.NewLine{},
 	)
 
-	if receipt.OrderType == model.TypesOfOrderDinein {
+	if receipt.OrderType == orderModel.OrderTypeDineIn {
 		commands = append(commands,
 			command.Text("Waiter: "+receipt.DineInInfo.RunnerName),
 			command.NewLine{},
