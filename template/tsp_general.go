@@ -11,14 +11,17 @@ import (
 )
 
 const (
-	dateFormat            = "Jan 2, 2006               03:04:05 PM"
-	billItemFormat        = "\n%2dx %-16s %8.2f %8.2f\n"
-	itemLine2Format       = "    %-16s\n"
-	billSubEntryFormat    = "    * %-14s %+8.2f %+8.2f\n"
-	subEntryLine2Format   = "      %-14s\n"
-	totalsFormat          = "%-25s %-3s %8.2f\n"
-	kitchenItemFormat     = "\n%2dx %-16s  %16s\n"
-	kitchenSubEntryFormat = "    * %-14s\n"
+	dateFormat                          = "Jan 2, 2006               03:04:05 PM"
+	billItemFormat                      = "\n%2dx %-16s %8.2f %8.2f\n"
+	billItemWithoutUnityPriceFormat     = "\n%2dx %-16s          %8.2f\n"
+	itemLine2Format                     = "    %-16s\n"
+	billSubEntryFormat                  = "    * %-14s %+8.2f %+8.2f\n"
+	billSubEntryFormatWithoutUnityPrice = "    * %-14s          %+8.2f\n"
+	subEntryLine2Format                 = "      %-14s\n"
+	totalsFormat                        = "%-25s %-3s %8.2f\n"
+	kitchenItemFormat                   = "\n%2dx %-16s  %16s\n"
+	kitchenSubEntryFormat               = "    * %-14s\n"
+	maxColumns                          = 38
 )
 
 // LineSeparator adds a horizontal line separator
@@ -36,27 +39,27 @@ func LineSeparator(commands []command.PrinterCommand) []command.PrinterCommand {
 func Footer(commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.NewLine{},
 		command.NewLine{},
-		command.Text(helper.Center("Thank You!", " ", 38)),
+		command.Text(helper.Center("Thank You!", " ", maxColumns)),
 		command.NewLine{},
-		command.Text(helper.Center("Powered by Rockspoon", " ", 38)),
+		command.Text(helper.Center("Powered by Rockspoon", " ", maxColumns)),
 		command.NewLine{},
-		command.Text(helper.Center("www.rockspoon.com", " ", 38)),
+		command.Text(helper.Center("www.rockspoon.com", " ", maxColumns)),
 		command.NewLine{},
 	)
 	return commands
 }
 
-// AddRestaurantInfo adds Restaurant Information
+// AddRestaurantInfo adds restaurant address
 func AddRestaurantInfo(info model.RestaurantInfo, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.NewLine{},
 		command.NewLine{},
-		command.Text(helper.Center(info.Name, " ", 38)),
+		command.Text(helper.Center(info.Name, " ", maxColumns)),
 		command.NewLine{},
-		command.Text(helper.Center(info.Address.Address1, " ", 38)),
+		command.Text(helper.Center(info.Address.Address1, " ", maxColumns)),
 		command.NewLine{},
-		command.Text(helper.Center(info.Address.City+" "+info.Address.ZipCode, " ", 38)),
+		command.Text(helper.Center(info.Address.City+" "+info.Address.ZipCode, " ", maxColumns)),
 		command.NewLine{},
-		command.Text(helper.Center(info.Address.Region+" "+info.Address.Country, " ", 38)),
+		command.Text(helper.Center(info.Address.Region+" "+info.Address.Country, " ", maxColumns)),
 		command.NewLine{},
 	)
 	return commands
@@ -84,7 +87,7 @@ func AddCheckTotal(check model.Check, commands []command.PrinterCommand) []comma
 	return commands
 }
 
-// AddItemsBill add items
+// AddItemsBill add items in the bill
 func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands,
 		command.Text("                         Unity   Final\n"),
@@ -93,7 +96,12 @@ func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterComman
 
 	for _, item := range entryItems {
 		itemName := helper.WarpString(item.Name, 16)
-		line := fmt.Sprintf(billItemFormat, item.Quantity, itemName[0], item.UnityPrice.Price, item.FinalPrice.Price)
+		line := ""
+		if item.UnityPrice.Price != 0 {
+			line = fmt.Sprintf(billItemFormat, item.Quantity, itemName[0], item.UnityPrice.Price, item.FinalPrice.Price)
+		} else {
+			line = fmt.Sprintf(billItemWithoutUnityPriceFormat, item.Quantity, itemName[0], item.FinalPrice.Price)
+		}
 		commands = append(commands, command.Text(line))
 		for i := range itemName[1:] {
 			line = fmt.Sprintf(itemLine2Format, itemName[i+1])
@@ -108,7 +116,11 @@ func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterComman
 				title = title + "(" + subEntry.Description + ")"
 			}
 			subEntryName := helper.WarpString(title, 16)
-			line := fmt.Sprintf(billSubEntryFormat, subEntryName[0], subEntry.UnityPrice.Price, subEntry.FinalPrice.Price)
+			if subEntry.UnityPrice.Price != 0 {
+				line = fmt.Sprintf(billSubEntryFormat, subEntryName[0], subEntry.UnityPrice.Price, subEntry.FinalPrice.Price)
+			} else {
+				line = fmt.Sprintf(billSubEntryFormatWithoutUnityPrice, subEntryName[0], subEntry.FinalPrice.Price)
+			}
 			commands = append(commands, command.Text(line))
 			for i := range subEntryName[1:] {
 				line = fmt.Sprintf(subEntryLine2Format, subEntryName[i+1])
@@ -119,7 +131,7 @@ func AddItemsBill(entryItems []model.EntryItem, commands []command.PrinterComman
 	return commands
 }
 
-// AddServiceInfoBill adds Table Information
+// AddServiceInfoBill adds information about the table or about the customer
 func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, createdAt time.Time, check model.Check, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands,
 		command.Text(createdAt.Format(dateFormat)),
@@ -133,7 +145,6 @@ func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, crea
 
 	if orderType == model.TypesOfOrderDinein {
 		commands = append(commands,
-			// command.Bold{Enabled: true},
 			command.Text("Section: "+check.DineInOptions.SectionName),
 			command.NewLine{},
 			command.Text("Tables: "+check.DineInOptions.Tables),
@@ -155,7 +166,7 @@ func AddServiceInfoBill(attendantName string, orderType model.TypesOfOrder, crea
 	return commands
 }
 
-// AddServiceInfoKitchen does something
+// AddServiceInfoKitchen adds information about the table
 func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands,
 		command.Text(receipt.CreatedAt.Format(dateFormat)),
@@ -169,7 +180,6 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 
 	if receipt.OrderType == model.TypesOfOrderDinein {
 		commands = append(commands,
-			// command.Bold{Enabled: true},
 			command.Text("Runner: "+receipt.DineInInfo.RunnerName),
 			command.NewLine{},
 			command.Text("Section: "+receipt.DineInInfo.SectionName),
@@ -182,7 +192,7 @@ func AddServiceInfoKitchen(receipt model.KitchenReceipt, commands []command.Prin
 	return commands
 }
 
-// AddItemsKitchen does other thing
+// AddItemsKitchen adds items information for the kitchen
 func AddItemsKitchen(kitchenItems []model.KitchenItem, commands []command.PrinterCommand) []command.PrinterCommand {
 	commands = append(commands, command.Text("QTY Item                     Fire Type\n"))
 

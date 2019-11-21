@@ -34,7 +34,7 @@ type Check struct {
 	Total    money.SimpleMoney // Subtotal + charge
 }
 
-// EntryItem is an item
+// EntryItem an item in the bill
 type EntryItem struct {
 	Name       string
 	Quantity   int
