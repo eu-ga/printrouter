@@ -3,162 +3,71 @@ package model
 import (
 	"time"
 
-	order "github.com/rockspoon/rs.com.order-model/model"
+	"github.com/rockspoon/rs.com.order-model/model"
+	"github.com/rockspoon/rs.cor.common-model/address"
 	money "github.com/rockspoon/rs.cor.common-money"
 )
 
-// TableBillRequest table bill print request
-type TableBillRequest struct {
-	Order       order.Order       `json:"order"`
-	Check       order.CheckOrder  `json:"check"`
-	DineinOrder order.DineInOrder `json:"dineinOrder"`
-	Items       []order.OrderItem `json:"items"`
-	Language    string            `json:"language"`
-}
-
-// ToBill converts the request struct into a printable struct
-func (t TableBillRequest) ToBill() Bill {
-	bill := Bill{
-		RestaurantInfo: t.GetRestaurantInfo(),
-		TableInfo:      t.GetTableInfo(),
-		InvoiceCheck:   t.GetInvoiceCheck(),
-		InvoiceNumber:  t.Order.ID.Hex(),
-		BillTime:       t.Order.CreatedAt,
-		Items:          t.OrderItemsToInvoiceItems(),
-	}
-	return bill
-}
-
-// GetRestaurantInfo get Restaurant Info from the request
-func (t TableBillRequest) GetRestaurantInfo() RestaurantInfo {
-	return RestaurantInfo{
-		RestaurantName:    t.DineinOrder.Address.Name,
-		RestaurantAddress: t.DineinOrder.Address.AddressLine,
-		RestaurantZipCode: t.DineinOrder.Address.Zip,
-		RestaurantCity:    t.DineinOrder.Address.City,
-		RestaurantRegion:  t.DineinOrder.Address.State,
-		RestaurantCountry: t.DineinOrder.Address.Country,
-		RestaurantPhone:   t.DineinOrder.Address.Phone,
-	}
-}
-
-// GetTableInfo get TableInfo from the request object
-func (t TableBillRequest) GetTableInfo() TableInfo {
-
-	customerName := ""
-	if t.DineinOrder.Diners != nil && len(t.DineinOrder.Diners) > 0 {
-		customerName = t.DineinOrder.Diners[0].Name
-	}
-	waiterName := ""
-	tableNumber := ""
-
-	if t.DineinOrder.CurrentTableHistory.Tables != nil && len(t.DineinOrder.CurrentTableHistory.Tables) > 0 {
-		waiterName = t.DineinOrder.CurrentTableHistory.WaiterName
-		tableNumber = t.DineinOrder.CurrentTableHistory.Name
-	}
-
-	return TableInfo{
-		DiningPartyType: string(t.Order.Type),
-		ServerName:      waiterName,
-		TableNumber:     tableNumber,
-		CustomerName:    customerName,
-	}
-}
-
-// GetInvoiceCheck get InvoiceCheck from the request
-func (t TableBillRequest) GetInvoiceCheck() InvoiceCheck {
-	check := t.Check.Summarize(money.CurrencyUSD(), t.DineinOrder.MaxCustomerCount)
-	return InvoiceCheck{
-		SubTotal:                check.Subtotal,
-		DiscountAmount:          check.DiscountAmount,
-		DiscountRate:            float32(check.DiscountRate.Value),
-		MandatoryGratuityRate:   float32(check.MandatoryGratuityRate.Value),
-		MandatoryGratuityAmount: check.MandatoryGratuityAmount,
-		TaxRate:                 float32(check.TaxRate.Value),
-		TaxAmount:               check.TaxAmount,
-		Total:                   check.Total,
-	}
-}
-
-// OrderItemsToInvoiceItems converts order items into printable models
-func (t TableBillRequest) OrderItemsToInvoiceItems() []InvoiceItem {
-	items := make([]InvoiceItem, 0)
-	for i := 0; i < len(t.Items); i++ {
-		name := ""
-		for _, n := range t.Items[i].Name {
-			if n.Language == t.Language {
-				name = n.Value
-			}
-		}
-
-		mod := ""
-		for _, desc := range t.Items[i].Description {
-			if desc.Language == t.Language {
-				mod = desc.Value
-			}
-		}
-		item := InvoiceItem{
-			ItemName: name,
-			// TODO review
-			Quantity:  1,
-			Weight:    1,
-			Amount:    t.Items[i].Price,
-			Modifiers: mod,
-		}
-		items = append(items, item)
-	}
-	return items
-}
-
-// Bill printable table bill
+// Bill is a collection of information that have to be printed in the bill
 type Bill struct {
-	RestaurantInfo
-	TableInfo
-	InvoiceCheck
-
-	InvoiceNumber string
-	BillTime      time.Time
-	Items         []InvoiceItem
+	Restaurant    RestaurantInfo  `json:"restaurant"`
+	OrderType     model.OrderType `json:"orderType"`
+	AttendantName string          `json:"attendantName"`
+	CreatedAt     time.Time       `json:"createdAt"`
+	Checks        []Check         `json:"checks"`
 }
 
-// InvoiceCheck check information
-type InvoiceCheck struct {
-	SubTotal                money.Money
-	DiscountAmount          money.Money
-	DiscountRate            float32
-	MandatoryGratuityRate   float32
-	MandatoryGratuityAmount money.Money
-	TaxRate                 float32
-	TaxAmount               money.Money
-	DeliveryFeeAmount       money.Money
-	Total                   money.Money
-	SalesTaxDescription     string
-}
-
-// TableInfo table information
-type TableInfo struct {
-	DiningPartyType string
-	ServerName      string
-	TableNumber     string
-	CustomerName    string
-}
-
-// InvoiceItem ordered item
-type InvoiceItem struct {
-	ItemName  string
-	Quantity  int
-	Weight    int
-	Amount    money.Money
-	Modifiers string
-}
-
-// RestaurantInfo restaurant information
+// RestaurantInfo is the info about the restaurant
 type RestaurantInfo struct {
-	RestaurantName    string
-	RestaurantAddress string
-	RestaurantZipCode string
-	RestaurantCity    string
-	RestaurantRegion  string
-	RestaurantCountry string
-	RestaurantPhone   string
+	Name    string          `json:"name"`
+	Address address.Address `json:"address"`
+	Phone   *string         `json:"phone,omitempty"`
+}
+
+// Check to be printed
+type Check struct {
+	DineInOptions *DineInOptions `json:"dineInOptions,omitempty"`
+	CustomerInfo  *CustomerInfo  `json:"customerInfo,omitempty"`
+
+	Items    []EntryItem       `json:"items"`
+	Subtotal money.SimpleMoney `json:"subtotal"`
+	Charges  SubEntrySlice     `json:"charges"`
+	Total    money.SimpleMoney `json:"total"`
+}
+
+// EntryItem an item in the bill
+type EntryItem struct {
+	Name       string            `json:"name"`
+	Quantity   int               `json:"quantity"`
+	UnityPrice money.SimpleMoney `json:"unityPrice"`
+	FinalPrice money.SimpleMoney `json:"finalPrice"`
+	SubEntries SubEntrySlice     `json:"subEntries"`
+	Weight     int               `json:"weight"`
+}
+
+// SubEntry is description of an item
+type SubEntry struct {
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Index       int               `json:"index"`
+	UnityPrice  money.SimpleMoney `json:"unityPrice"`
+	FinalPrice  money.SimpleMoney `json:"finalPrice"`
+}
+
+// SubEntrySlice implements sort.Interface based on Index
+type SubEntrySlice []SubEntry
+
+// Len returns the len of SubEntrySlice, this is required to implement the sort.Interface
+func (s SubEntrySlice) Len() int {
+	return len(s)
+}
+
+// Less returns if an element opf the slice is smaller than the other, this is required to implement the sort.Interface
+func (s SubEntrySlice) Less(i, j int) bool {
+	return s[i].Index < s[j].Index
+}
+
+// Swap swaps two elements of a SubEntrySlice, this is required to implement the sort.Interface
+func (s SubEntrySlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }

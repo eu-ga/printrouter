@@ -13,18 +13,19 @@ type CheckGenerator struct {
 // Generate converts a model into a command list
 func (gen CheckGenerator) Generate(bill model.Bill) []command.PrinterCommand {
 	cmdrs := make([]command.PrinterCommand, 0)
-	// Header
-	cmdrs = template.AddRestaurantInfo(bill.RestaurantInfo, cmdrs)
-	cmdrs = template.LineSeparator(cmdrs)
-	cmdrs = template.AddTableInfo(bill.TableInfo, bill.InvoiceNumber, bill.BillTime, cmdrs)
+	for _, check := range bill.Checks {
+		cmdrs = template.AddRestaurantInfo(bill.Restaurant, cmdrs)
+		cmdrs = template.LineSeparator(cmdrs)
 
-	cmdrs = template.LineSeparator(cmdrs)
-	cmdrs = template.AddInvoiceItems(bill.Items, cmdrs)
-	cmdrs = template.LineSeparator(cmdrs)
-	cmdrs = template.AddInvoiceCheck(bill.InvoiceCheck, cmdrs)
-	cmdrs = template.LineSeparator(cmdrs)
-	cmdrs = template.Footer(cmdrs)
-	cmdrs = append(cmdrs, command.Cut{})
+		cmdrs = template.AddServiceInfoBill(bill.AttendantName, bill.OrderType, bill.CreatedAt, check, cmdrs)
+		cmdrs = template.LineSeparator(cmdrs)
+		cmdrs = template.AddItemsBill(check.Items, cmdrs)
+		cmdrs = template.LineSeparator(cmdrs)
+		cmdrs = template.AddCheckTotal(check, cmdrs)
+		cmdrs = template.LineSeparator(cmdrs)
+		cmdrs = template.Footer(cmdrs)
+		cmdrs = append(cmdrs, command.Cut{})
+	}
 
 	return cmdrs
 }

@@ -26,16 +26,16 @@ func (m MockDeviceMS) GetDefaultPrinter(path, key string) (*d.Printer, error) {
 }
 
 func TestController_KitchenReceipt(t *testing.T) {
-	receipt := model.KitchenReceiptRequest{}.ToKitchenReceipt()
-	cmdrs := kitchen.Generator{}.Generate(receipt, d.TSPPrinterType)
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
+	receipt := model.KitchenReceipt{}
+	cmdrs := kitchen.Generator{}.Generate(receipt, "TSPP")
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
 		name         string
 		data         *s.ContextData
 		printer      *d.Printer
 		printerError error
-		request      model.KitchenReceiptRequest
+		request      model.KitchenReceipt
 		payload      *model.Payload
 		expErr       string
 	}{
@@ -51,13 +51,13 @@ func TestController_KitchenReceipt(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
+			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
 			data: &s.ContextData{
 				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
-			payload: &model.Payload{IPAddress: "123", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Kitchen Receipt"},
+			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Kitchen Receipt"},
 		},
 	}
 
@@ -78,16 +78,16 @@ func TestController_KitchenReceipt(t *testing.T) {
 }
 
 func TestController_TableBill(t *testing.T) {
-	bill := model.TableBillRequest{}.ToBill()
-	cmdrs := b.Generator{}.Generate(bill, d.TSPPrinterType)
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, d.TSPPrinterType)
+	bill := model.Bill{}
+	cmdrs := b.Generator{}.Generate(bill, "TSPP")
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
 		name         string
 		data         *s.ContextData
 		printer      *d.Printer
 		printerError error
-		request      model.TableBillRequest
+		bill         model.Bill
 		payload      *model.Payload
 		expErr       string
 	}{
@@ -103,13 +103,13 @@ func TestController_TableBill(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterSettings: d.PrinterSettings{PrinterType: d.TSPPrinterType}},
+			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
 			data: &s.ContextData{
 				//nolint:staticcheck
 				Tenant: s.Tenant{Key: "1"},
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
-			payload: &model.Payload{IPAddress: "123", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
+			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
 		},
 	}
 
@@ -118,7 +118,7 @@ func TestController_TableBill(t *testing.T) {
 			deviceMS := MockDeviceMS{Printer: tc.printer, Error: tc.printerError}
 			controller := NewPrintController(deviceMS)
 
-			payload, err := controller.TableBill(tc.request, tc.data)
+			payload, err := controller.TableBill(tc.bill, tc.data)
 			if tc.name == "success" {
 				require.NoError(t, err)
 				require.Equal(t, tc.payload, payload)

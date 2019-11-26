@@ -17,14 +17,14 @@ type ControllerMock struct {
 	Error   error
 }
 
-func (c ControllerMock) KitchenReceipt(request model.KitchenReceiptRequest, cData *mm.ContextData) (*model.Payload, error) {
+func (c ControllerMock) KitchenReceipt(request model.KitchenReceipt, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}
 	return c.Payload, nil
 }
 
-func (c ControllerMock) TableBill(request model.TableBillRequest, cData *mm.ContextData) (*model.Payload, error) {
+func (c ControllerMock) TableBill(request model.Bill, cData *mm.ContextData) (*model.Payload, error) {
 	if c.Error != nil {
 		return nil, c.Error
 	}
@@ -95,7 +95,7 @@ func TestRouter_KitchenReceipt(t *testing.T) {
 				},
 				Reporter: httpexpect.NewAssertReporter(t),
 			})
-			e.GET("/kitchen-order").
+			e.GET("/kitchen-card").
 				WithText(tc.request).
 				Expect().
 				Status(tc.expectedCode).

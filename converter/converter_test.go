@@ -3,7 +3,6 @@ package converter
 import (
 	"testing"
 
-	d "github.com/rockspoon/rs.cor.device-model/model"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 	"github.com/stretchr/testify/require"
 )
@@ -11,12 +10,12 @@ import (
 func TestConverter_Convert(t *testing.T) {
 	tt := []struct {
 		name        string
-		printerType d.PrinterType
+		printerType string
 		expResult   string
 	}{
 		{
 			name:        "TSP",
-			printerType: d.TSPPrinterType,
+			printerType: "TSPP",
 			expResult:   "VGhpcyBpcyBhIHRleHQ=",
 		},
 		{

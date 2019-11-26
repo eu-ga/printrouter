@@ -32,17 +32,16 @@ func NewPrintController(deviceMS DeviceMS) PrintController {
 }
 
 // KitchenReceipt print a kitchen receipt
-func (c PrintController) KitchenReceipt(request model.KitchenReceiptRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c PrintController) KitchenReceipt(receipt model.KitchenReceipt, cData *s.ContextData) (*model.Payload, error) {
 	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
 	if err != nil {
 		return nil, err
 	}
 
-	receipt := request.ToKitchenReceipt()
-	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterSettings.PrinterType)
+	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterModel)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterSettings.PrinterType),
+		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Kitchen Receipt",
@@ -51,17 +50,16 @@ func (c PrintController) KitchenReceipt(request model.KitchenReceiptRequest, cDa
 }
 
 // TableBill prionts a table bill
-func (c PrintController) TableBill(request model.TableBillRequest, cData *s.ContextData) (*model.Payload, error) {
+func (c PrintController) TableBill(bill model.Bill, cData *s.ContextData) (*model.Payload, error) {
 	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
 	if err != nil {
 		return nil, err
 	}
 
-	bill := request.ToBill()
-	commands := c.TableBillGenerator.Generate(bill, printer.PrinterSettings.PrinterType)
+	commands := c.TableBillGenerator.Generate(bill, printer.PrinterModel)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterSettings.PrinterType),
+		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Table Bill",
