@@ -35,7 +35,7 @@ func WarpString(str string, warpLength int) []string {
 		if len(formattedWords[i])+1+len(res[line]) <= warpLength {
 			res[line] = res[line] + formattedWords[i] + " "
 		} else {
-			res[line] = res[line][:(len(res[line]) - 1)] // remove the space form the last word in line
+			res[line] = res[line][:(len(res[line]) - 1)] // remove the space from the last word in line
 			res = append(res, formattedWords[i]+" ")
 			line++
 		}

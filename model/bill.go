@@ -57,12 +57,17 @@ type SubEntry struct {
 // SubEntrySlice implements sort.Interface based on Index
 type SubEntrySlice []SubEntry
 
+// Len returns the len of SubEntrySlice, this is required to implement the sort.Interface
 func (s SubEntrySlice) Len() int {
 	return len(s)
 }
+
+// Less returns if an element opf the slice is smaller than the other, this is required to implement the sort.Interface
 func (s SubEntrySlice) Less(i, j int) bool {
 	return s[i].Index < s[j].Index
 }
+
+// Swap swaps two elements of a SubEntrySlice, this is required to implement the sort.Interface
 func (s SubEntrySlice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
