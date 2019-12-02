@@ -9,9 +9,9 @@ import (
 	s "github.com/rockspoon/rs.cor.middleware/model"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
-	b "github.com/rockspoon/rs.cor.printer-ms/template/bill"
-	"github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
-	r "github.com/rockspoon/rs.cor.printer-ms/template/receipt"
+	billTemplate "github.com/rockspoon/rs.cor.printer-ms/template/bill"
+	kitchenTemplate "github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
+	receiptTemplate "github.com/rockspoon/rs.cor.printer-ms/template/receipt"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,7 +29,7 @@ func (m MockDeviceMS) GetDefaultPrinter(path, key string) (*d.Printer, error) {
 
 func TestController_KitchenReceipt(t *testing.T) {
 	receipt := model.KitchenReceipt{}
-	cmdrs := kitchen.Generator{}.Generate(receipt, "TSPP")
+	cmdrs := kitchenTemplate.Generator{}.Generate(receipt, "TSPP")
 	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
@@ -81,7 +81,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 
 func TestController_TableBill(t *testing.T) {
 	bill := model.Bill{}
-	cmdrs := b.Generator{}.Generate(bill, "TSPP")
+	cmdrs := billTemplate.Generator{}.Generate(bill, "TSPP")
 	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
@@ -138,7 +138,7 @@ func TestController_PaymentReceipt(t *testing.T) {
 			DineInOptions: &model.DineInOptions{},
 		},
 	}
-	cmdrs := r.Generator{}.Generate(receipt, "TSPP")
+	cmdrs := receiptTemplate.Generator{}.Generate(receipt, "TSPP")
 	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
 
 	tt := []struct {
@@ -169,7 +169,7 @@ func TestController_PaymentReceipt(t *testing.T) {
 				Paths:  map[string]string{s.DEVICE: "device"},
 			},
 			receipt: receipt,
-			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
+			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Payment Receipt"},
 		},
 	}
 
