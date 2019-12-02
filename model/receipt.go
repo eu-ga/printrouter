@@ -7,7 +7,7 @@ import (
 	money "github.com/rockspoon/rs.cor.common-money"
 )
 
-// PaymentReceipt is something
+// PaymentReceipt is the receipt to be printed
 type PaymentReceipt struct {
 	Restaurant    RestaurantInfo  `json:"restaurant"`
 	OrderType     model.OrderType `json:"orderType"`
