@@ -17,6 +17,7 @@ import (
 type printService interface {
 	KitchenReceipt(request model.KitchenReceipt, cData *mm.ContextData) (*model.Payload, error)
 	TableBill(request model.Bill, cData *mm.ContextData) (*model.Payload, error)
+	PaymentReceipt(request model.PaymentReceipt, cData *mm.ContextData) (*model.Payload, error)
 }
 
 type (
@@ -40,7 +41,7 @@ func newPrintRouter(service printService) printRouter {
 		Methods(http.MethodGet).HandlerFunc(handler.printSalesSummaryReport)
 
 	router.Path("/payment-invoice").
-		Methods(http.MethodGet).HandlerFunc(handler.printPaymentInvoice)
+		Methods(http.MethodGet).HandlerFunc(handler.printPaymentReceipt)
 
 	router.Path("/delivery-takeout/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printDeliveryTakeoutReceipt)
@@ -120,31 +121,6 @@ func (handler printRouter) printTest(w http.ResponseWriter, r *http.Request) {
 //
 func (handler printRouter) printSalesSummaryReport(w http.ResponseWriter, r *http.Request) {
 	m.JSONReturn(w, http.StatusOK, model.Payload{})
-}
-
-// swagger:operation GET /print/payment-invoice Print printPaymentInvoice
-// this endpoint returns a payment invoice payload by payment id
-// ---
-//     Consumes:
-//     - application/json
-//
-//     Produces:
-//     - application/json
-//
-//     Parameters:
-//     - name: userPaymentId
-//       in: query
-//       required: true
-//       type: string
-//       description: payment id
-//
-//     Responses:
-//       '200':
-//         description: printPaymentInvoice response
-//         schema:
-//           $ref: "#/definitions/Payload"
-//
-func (handler printRouter) printPaymentInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 // swagger:operation GET /print/delivery-takeout/{id}/receipt Print printDeliveryTakeoutReceipt
@@ -345,4 +321,68 @@ func (handler printRouter) printTableBill(w http.ResponseWriter, r *http.Request
 //           $ref: "#/definitions/VenuePrinterPayload"
 //
 func (handler printRouter) printVenuePrinters(w http.ResponseWriter, r *http.Request) {
+}
+
+type paymentReceiptRequest struct {
+	model.PaymentReceipt
+}
+
+// Build builds the create role JSONRequest.
+func (r *paymentReceiptRequest) Build(req *http.Request) error {
+	err := json.NewDecoder(req.Body).Decode(r)
+	defer util.CloseOrLog(req.Body)
+	if err != nil && err != io.EOF {
+		return e.DecodeBody(err)
+	}
+	return nil
+}
+
+// Validate validates the create role JSONRequest.
+func (r paymentReceiptRequest) Validate() error {
+	return nil
+}
+
+// swagger:operation GET /print/payment-invoice Print printPaymentReceipt
+// this endpoint returns a payment receipt
+// ---
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Parameters:
+//     - name: Receipt Request
+//       in: body
+//       required: true
+//       type: json
+//       description: receipt to be printed
+//       schema:
+//         $ref: '#/definitions/PaymentReceipt'
+//
+//     Responses:
+//       '200':
+//         description: printPaymentReceipt response
+//         schema:
+//           $ref: "#/definitions/Payload"
+//
+func (handler printRouter) printPaymentReceipt(w http.ResponseWriter, r *http.Request) {
+	var req paymentReceiptRequest
+	err := m.ParseRequest(r, &req)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	data, err := s.RequestContextData(r)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+
+	result, err := handler.service.PaymentReceipt(req.PaymentReceipt, data)
+	if err != nil {
+		m.JSONError(w, err)
+		return
+	}
+	m.JSONReturn(w, http.StatusOK, result)
 }

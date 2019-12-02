@@ -24,7 +24,6 @@ linters:
   - megacheck
   - interfacer
   - unconvert
-  - goconst
   - misspell
   - unparam
   - gofmt
