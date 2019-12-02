@@ -352,11 +352,13 @@ func (r paymentReceiptRequest) Validate() error {
 //     - application/json
 //
 //     Parameters:
-//     - name: id
-//       in: query
+//     - name: Receipt Request
+//       in: body
 //       required: true
-//       type: string
-//       description: dinning party id
+//       type: json
+//       description: receipt to be printed
+//       schema:
+//         $ref: '#/definitions/PaymentReceipt'
 //
 //     Responses:
 //       '200':
