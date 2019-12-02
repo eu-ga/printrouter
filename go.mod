@@ -17,3 +17,5 @@ require (
 	go.mongodb.org/mongo-driver v1.1.3
 	golang.org/x/text v0.3.2
 )
+
+go 1.13

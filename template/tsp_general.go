@@ -6,6 +6,7 @@ import (
 	"time"
 
 	orderModel "github.com/rockspoon/rs.com.order-model/model"
+	money "github.com/rockspoon/rs.cor.common-money"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 	"github.com/rockspoon/rs.cor.printer-ms/helper"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
@@ -22,6 +23,8 @@ const (
 	totalsFormat                        = "%-25s %-3s %8.2f\n"
 	kitchenItemFormat                   = "\n%2dx %-16s  %16s\n"
 	kitchenSubEntryFormat               = "    * %-14s\n"
+	paymentMethod                       = "Payment Type:                 %8s\n"
+	paymentDetails                      = "%-13s            %13s\n"
 	maxColumns                          = 38
 )
 
@@ -38,7 +41,7 @@ func LineSeparator(commands []command.PrinterCommand) []command.PrinterCommand {
 
 // Footer adds Rockspoon footer
 func Footer(commands []command.PrinterCommand) []command.PrinterCommand {
-	commands = append(commands, command.NewLine{},
+	commands = append(commands,
 		command.NewLine{},
 		command.Text(helper.Center("Thank You!", " ", maxColumns)),
 		command.NewLine{},
@@ -222,5 +225,30 @@ func AddItemsKitchen(kitchenItems []model.KitchenItem, commands []command.Printe
 		)
 	}
 	commands = commands[:len(commands)-1]
+	return commands
+}
+
+// AddReceiptTotal adds pricing information
+func AddReceiptTotal(paymentType string, paid, tip money.SimpleMoney, commands []command.PrinterCommand) []command.PrinterCommand {
+	commands = append(commands,
+		command.Text(fmt.Sprintf(paymentMethod, paymentType)),
+		command.Text(fmt.Sprintf(totalsFormat, "Paid:", paid.Symbol, paid.Price)),
+		command.Text(fmt.Sprintf(totalsFormat, "Tips:", tip.Symbol, tip.Price)),
+	)
+
+	return commands
+}
+
+// AddReceiptDetails adds pricing information
+func AddReceiptDetails(cardInfo model.CardInfo, commands []command.PrinterCommand) []command.PrinterCommand {
+	commands = append(commands,
+		command.NewLine{},
+		command.Text("Details\n"),
+		command.Text(fmt.Sprintf(paymentDetails, "Flag", cardInfo.Type)),
+		command.Text(fmt.Sprintf(paymentDetails, "Number", cardInfo.Number)),
+		command.Text(fmt.Sprintf(paymentDetails, "Authorization", cardInfo.Authorization)),
+		command.Text(fmt.Sprintf(paymentDetails, "Cardholder", cardInfo.Cardholder)),
+	)
+
 	return commands
 }

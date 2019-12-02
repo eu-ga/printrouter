@@ -31,6 +31,13 @@ func (c ControllerMock) TableBill(request model.Bill, cData *mm.ContextData) (*m
 	return c.Payload, nil
 }
 
+func (c ControllerMock) PaymentReceipt(request model.PaymentReceipt, cData *mm.ContextData) (*model.Payload, error) {
+	if c.Error != nil {
+		return nil, c.Error
+	}
+	return c.Payload, nil
+}
+
 func TestRouter_KitchenReceipt(t *testing.T) {
 
 	tt := []struct {
@@ -169,6 +176,79 @@ func TestRouter_TableBill(t *testing.T) {
 				Reporter: httpexpect.NewAssertReporter(t),
 			})
 			e.GET("/table-bill").
+				WithText(tc.request).
+				Expect().
+				Status(tc.expectedCode).
+				Body().Equal(tc.expectedBody + "\n")
+
+		})
+	}
+}
+
+func TestRouter_PaymentReceipt(t *testing.T) {
+	tt := []struct {
+		name            string
+		soaMiddleware   middleware.Middleware
+		request         string
+		payload         *model.Payload
+		controllerError error
+		contextData     *mm.ContextData
+		expectedCode    int
+		expectedBody    string
+	}{
+		{
+			name:          "bad request",
+			request:       "not a json",
+			soaMiddleware: soajsTest(false, "", "", ""),
+			expectedCode:  http.StatusBadRequest,
+			expectedBody:  `{"code":"BadBodyFormat","error":"could not decode request body","cause":"invalid character 'o' in literal null (expecting 'u')"}`,
+		},
+		{
+			name:          "no soa context",
+			request:       `{}`,
+			soaMiddleware: soajsTest(false, "", "", ""),
+			expectedCode:  http.StatusInternalServerError,
+			expectedBody:  `{"code":"UnexpectedError","error":"could not type assert soajs context"}`,
+		},
+		{
+			name:            "controller error",
+			request:         `{}`,
+			soaMiddleware:   soajsTest(true, "", "", ""),
+			contextData:     getContextData("", "", ""),
+			controllerError: errors.New("could not find printer for venue"),
+			expectedCode:    http.StatusInternalServerError,
+			expectedBody:    `{"code":"UnexpectedError","error":"could not find printer for venue"}`,
+		},
+		{
+			name:          "success",
+			request:       `{}`,
+			soaMiddleware: soajsTest(true, "1", "1", "1"),
+			contextData:   getContextData("1", "1", "1"),
+			payload:       new(model.Payload),
+			expectedCode:  http.StatusOK,
+			expectedBody:  `{"printPayload":"","ipAddress":"","printerModel":"","describeMessage":""}`,
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			controller := ControllerMock{Payload: tc.payload, Error: tc.controllerError}
+			handler := New(controller, tc.soaMiddleware)
+
+			api := mux.NewRouter()
+			api.PathPrefix("/").Handler(middleware.Wrapper(
+				handler,
+				middleware.Soajs(tc.soaMiddleware),
+			))
+
+			e := httpexpect.WithConfig(httpexpect.Config{
+				Client: &http.Client{
+					Transport: httpexpect.NewBinder(api),
+					Jar:       httpexpect.NewJar(),
+				},
+				Reporter: httpexpect.NewAssertReporter(t),
+			})
+			e.GET("/payment-invoice").
 				WithText(tc.request).
 				Expect().
 				Status(tc.expectedCode).
