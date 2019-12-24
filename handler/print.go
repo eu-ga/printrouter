@@ -255,7 +255,7 @@ func (r tableBillRequest) Validate() error {
 	return nil
 }
 
-// swagger:operation GET /print/table-bill Print printTableBill
+// swagger:operation POST /print/table-bill Print printTableBill
 // this endpoint returns a table's bill payload
 // ---
 //     Consumes:
@@ -270,6 +270,11 @@ func (r tableBillRequest) Validate() error {
 //       required: true
 //       type: string
 //       description: dinning party id
+//     - name: body
+//       in: body
+//       required: true
+//       schema:
+//         $ref: "#/definitions/Bill"
 //
 //     Responses:
 //       '200':

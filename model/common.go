@@ -7,6 +7,7 @@ import (
 )
 
 // RestaurantInfo is the info about the restaurant
+// swagger:model
 type RestaurantInfo struct {
 	Name    string          `json:"name"`
 	Address address.Address `json:"address"`
@@ -14,6 +15,7 @@ type RestaurantInfo struct {
 }
 
 // DineInOptions location about dinein
+// swagger:model
 type DineInOptions struct {
 	SectionName string `json:"sectionName"`
 	Tables      string `json:"tables"`
@@ -21,6 +23,7 @@ type DineInOptions struct {
 }
 
 // CustomerInfo is info about customere
+// swagger:model
 type CustomerInfo struct {
 	Name    string           `json:"name"`
 	Address *address.Address `json:"address,omitempty"`
@@ -38,6 +41,7 @@ var (
 )
 
 // Check to be printed
+// swagger:model
 type Check struct {
 	DineInOptions *DineInOptions `json:"dineInOptions,omitempty"`
 	CustomerInfo  *CustomerInfo  `json:"customerInfo,omitempty"`
@@ -49,6 +53,7 @@ type Check struct {
 }
 
 // EntryItem an item in the bill
+// swagger:model
 type EntryItem struct {
 	Name       string            `json:"name"`
 	Quantity   int               `json:"quantity"`
@@ -59,6 +64,7 @@ type EntryItem struct {
 }
 
 // SubEntry is description of an item
+// swagger:model
 type SubEntry struct {
 	Name        string            `json:"name"`
 	Description string            `json:"description"`

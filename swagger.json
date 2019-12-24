@@ -50,7 +50,7 @@
         }
       }
     },
-    "/print/kitchen-order": {
+    "/print/kitchen-card": {
       "get": {
         "description": "this endpoint returns a kitchen order ticket",
         "consumes": [
@@ -62,26 +62,19 @@
         "tags": [
           "Print"
         ],
-        "operationId": "printKitchenOrder",
+        "operationId": "printKitchenCard",
         "parameters": [
           {
             "type": "string",
-            "description": "preparation station's name",
-            "name": "stationName",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "serialized items ids [string1,string2,string3]",
-            "name": "itemsFiredIds",
-            "in": "query",
+            "description": "kitchen order data",
+            "name": "Receipt Request",
+            "in": "body",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "printKitchenOrder response",
+            "description": "printKitchenCard response",
             "schema": {
               "$ref": "#/definitions/Payload"
             }
@@ -91,7 +84,7 @@
     },
     "/print/payment-invoice": {
       "get": {
-        "description": "this endpoint returns a payment invoice payload by payment id",
+        "description": "this endpoint returns a payment receipt",
         "consumes": [
           "application/json"
         ],
@@ -101,19 +94,22 @@
         "tags": [
           "Print"
         ],
-        "operationId": "printPaymentInvoice",
+        "operationId": "printPaymentReceipt",
         "parameters": [
           {
-            "type": "string",
-            "description": "payment id",
-            "name": "userPaymentId",
-            "in": "query",
-            "required": true
+            "type": "json",
+            "description": "receipt to be printed",
+            "name": "Receipt Request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PaymentReceipt"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "printPaymentInvoice response",
+            "description": "printPaymentReceipt response",
             "schema": {
               "$ref": "#/definitions/Payload"
             }
@@ -193,7 +189,7 @@
       }
     },
     "/print/table-bill": {
-      "get": {
+      "post": {
         "description": "this endpoint returns a table's bill payload",
         "consumes": [
           "application/json"
@@ -212,6 +208,14 @@
             "name": "id",
             "in": "query",
             "required": true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Bill"
+            }
           }
         ],
         "responses": {
@@ -297,6 +301,213 @@
     }
   },
   "definitions": {
+    "Address": {
+      "description": "Address generic address model",
+      "type": "object",
+      "properties": {
+        "address1": {
+          "type": "string",
+          "x-go-name": "Address1"
+        },
+        "address2": {
+          "type": "string",
+          "x-go-name": "Address2"
+        },
+        "city": {
+          "type": "string",
+          "x-go-name": "City"
+        },
+        "country": {
+          "type": "string",
+          "x-go-name": "Country"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "instructions": {
+          "type": "string",
+          "x-go-name": "Instructions"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        },
+        "isValidated": {
+          "type": "boolean",
+          "x-go-name": "IsValidated"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Latitude"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Longitude"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "region": {
+          "type": "string",
+          "x-go-name": "Region"
+        },
+        "state": {
+          "type": "string",
+          "x-go-name": "State"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "timezone": {
+          "type": "string",
+          "x-go-name": "Timezone"
+        },
+        "zipcode": {
+          "type": "string",
+          "x-go-name": "ZipCode"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.common-model/address"
+    },
+    "Bill": {
+      "description": "Bill is a collection of information that have to be printed in the bill",
+      "type": "object",
+      "properties": {
+        "attendantName": {
+          "type": "string",
+          "x-go-name": "AttendantName"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Check"
+          },
+          "x-go-name": "Checks"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "orderType": {
+          "$ref": "#/definitions/OrderType"
+        },
+        "restaurant": {
+          "$ref": "#/definitions/RestaurantInfo"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "Check": {
+      "description": "Check to be printed",
+      "type": "object",
+      "properties": {
+        "charges": {
+          "$ref": "#/definitions/SubEntrySlice"
+        },
+        "customerInfo": {
+          "$ref": "#/definitions/CustomerInfo"
+        },
+        "dineInOptions": {
+          "$ref": "#/definitions/DineInOptions"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EntryItem"
+          },
+          "x-go-name": "Items"
+        },
+        "subtotal": {
+          "$ref": "#/definitions/SimpleMoney"
+        },
+        "total": {
+          "$ref": "#/definitions/SimpleMoney"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "CurrencySymbol": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.cor.common-money"
+    },
+    "CustomerInfo": {
+      "description": "CustomerInfo is info about customere",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "phone": {
+          "type": "string",
+          "x-go-name": "Phone"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "DineInOptions": {
+      "description": "DineInOptions location about dinein",
+      "type": "object",
+      "properties": {
+        "seats": {
+          "type": "string",
+          "x-go-name": "Seats"
+        },
+        "sectionName": {
+          "type": "string",
+          "x-go-name": "SectionName"
+        },
+        "tables": {
+          "type": "string",
+          "x-go-name": "Tables"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "EntryItem": {
+      "description": "EntryItem an item in the bill",
+      "type": "object",
+      "properties": {
+        "finalPrice": {
+          "$ref": "#/definitions/SimpleMoney"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Quantity"
+        },
+        "subEntries": {
+          "$ref": "#/definitions/SubEntrySlice"
+        },
+        "unityPrice": {
+          "$ref": "#/definitions/SimpleMoney"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Weight"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "OrderType": {
+      "type": "string",
+      "title": "OrderType is the card type.",
+      "x-go-package": "github.com/rockspoon/rs.com.order-model/model"
+    },
     "Payload": {
       "description": "Payload printer payload wrapper",
       "type": "object",
@@ -304,10 +515,6 @@
         "describeMessage": {
           "type": "string",
           "x-go-name": "DescribeMessage"
-        },
-        "id": {
-          "type": "string",
-          "x-go-name": "ID"
         },
         "ipAddress": {
           "type": "string",
@@ -321,6 +528,73 @@
           "type": "string",
           "x-go-name": "PrinterModel"
         }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "RestaurantInfo": {
+      "description": "RestaurantInfo is the info about the restaurant",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "phone": {
+          "type": "string",
+          "x-go-name": "Phone"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "SimpleMoney": {
+      "type": "object",
+      "title": "SimpleMoney is a use for the front.",
+      "properties": {
+        "price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "symbol": {
+          "$ref": "#/definitions/CurrencySymbol"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.common-money"
+    },
+    "SubEntry": {
+      "description": "SubEntry is description of an item",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "finalPrice": {
+          "$ref": "#/definitions/SimpleMoney"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "unityPrice": {
+          "$ref": "#/definitions/SimpleMoney"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "SubEntrySlice": {
+      "description": "SubEntrySlice implements sort.Interface based on Index",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SubEntry"
       },
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
     },
