@@ -53,7 +53,7 @@ func newPrintRouter(service printService) printRouter {
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
 
 	router.Path("/table-bill").
-		Methods(http.MethodGet).HandlerFunc(handler.printTableBill)
+		Methods(http.MethodPost).HandlerFunc(handler.printTableBill)
 
 	router.Path("/venue/{id}/pos-printers").
 		Methods(http.MethodGet).HandlerFunc(handler.printVenuePrinters)
