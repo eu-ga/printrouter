@@ -1,19 +1,15 @@
 package controller
 
 import (
-	d "github.com/rockspoon/rs.cor.device-model/model"
-	s "github.com/rockspoon/rs.cor.middleware/model"
+	"context"
+
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
+	"github.com/rockspoon/rs.cor.printer-ms/dependency"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	billTemplate "github.com/rockspoon/rs.cor.printer-ms/template/bill"
 	kitchenTemplate "github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
 	receiptTemplate "github.com/rockspoon/rs.cor.printer-ms/template/receipt"
 )
-
-// DeviceMS devices microservice
-type DeviceMS interface {
-	GetDefaultPrinter(path, key string) (*d.Printer, error)
-}
 
 // PrintController Print functions
 type PrintController struct {
@@ -21,11 +17,11 @@ type PrintController struct {
 	TableBillGenerator      billTemplate.Generator
 	PaymentReceiptGenerator receiptTemplate.Generator
 	Converter               converter.ByteCodeGenerator
-	DeviceMS                DeviceMS
+	DeviceMS                dependency.DeviceMS
 }
 
 // NewPrintController creates a new print controller
-func NewPrintController(deviceMS DeviceMS) PrintController {
+func NewPrintController(deviceMS dependency.DeviceMS) PrintController {
 	return PrintController{
 		KitchenReceiptGenerator: kitchenTemplate.Generator{},
 		Converter:               converter.NewByteCodeGenerator(),
@@ -34,8 +30,8 @@ func NewPrintController(deviceMS DeviceMS) PrintController {
 }
 
 // KitchenReceipt print a kitchen receipt
-func (c PrintController) KitchenReceipt(receipt model.KitchenReceipt, cData *s.ContextData) (*model.Payload, error) {
-	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
+func (c PrintController) KitchenReceipt(ctx context.Context, receipt model.KitchenReceipt) (*model.Payload, error) {
+	printer, err := c.DeviceMS.GetDefaultPrinter(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +48,8 @@ func (c PrintController) KitchenReceipt(receipt model.KitchenReceipt, cData *s.C
 }
 
 // TableBill prints a table bill
-func (c PrintController) TableBill(bill model.Bill, cData *s.ContextData) (*model.Payload, error) {
-	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
+func (c PrintController) TableBill(ctx context.Context, bill model.Bill) (*model.Payload, error) {
+	printer, err := c.DeviceMS.GetDefaultPrinter(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +66,8 @@ func (c PrintController) TableBill(bill model.Bill, cData *s.ContextData) (*mode
 }
 
 // PaymentReceipt prints a payment receipt
-func (c PrintController) PaymentReceipt(receipt model.PaymentReceipt, cData *s.ContextData) (*model.Payload, error) {
-	printer, err := c.DeviceMS.GetDefaultPrinter(cData.Tenant.Key, cData.Paths[s.DEVICE])
+func (c PrintController) PaymentReceipt(ctx context.Context, receipt model.PaymentReceipt) (*model.Payload, error) {
+	printer, err := c.DeviceMS.GetDefaultPrinter(ctx)
 	if err != nil {
 		return nil, err
 	}
