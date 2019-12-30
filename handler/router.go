@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	h "github.com/rockspoon/go-common/handler"
 	m "github.com/rockspoon/go-common/middleware"
+	"github.com/rockspoon/rs.cor.printer-ms/dependency"
 )
 
 type (
@@ -17,7 +18,7 @@ type (
 
 // New creates a router for this microservice.
 func New(
-	service printService,
+	service dependency.PrintService,
 	middleware func(http.Handler) http.Handler,
 ) Router {
 	router := Router{

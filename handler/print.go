@@ -8,26 +8,19 @@ import (
 	"github.com/gorilla/mux"
 	m "github.com/rockspoon/go-common/middleware"
 	"github.com/rockspoon/go-common/util"
-	mm "github.com/rockspoon/rs.cor.middleware/model"
-	s "github.com/rockspoon/rs.cor.middleware/soajs"
-	e "github.com/rockspoon/rs.cor.printer-ms/error"
+	"github.com/rockspoon/rs.cor.printer-ms/dependency"
+	e "github.com/rockspoon/rs.cor.printer-ms/errors"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 )
-
-type printService interface {
-	KitchenReceipt(request model.KitchenReceipt, cData *mm.ContextData) (*model.Payload, error)
-	TableBill(request model.Bill, cData *mm.ContextData) (*model.Payload, error)
-	PaymentReceipt(request model.PaymentReceipt, cData *mm.ContextData) (*model.Payload, error)
-}
 
 type (
 	printRouter struct {
 		*mux.Router
-		service printService
+		service dependency.PrintService
 	}
 )
 
-func newPrintRouter(service printService) printRouter {
+func newPrintRouter(service dependency.PrintService) printRouter {
 	router := mux.NewRouter().PathPrefix("/").Subrouter()
 	handler := printRouter{
 		router,
@@ -197,13 +190,8 @@ func (handler printRouter) printKitchenCard(w http.ResponseWriter, r *http.Reque
 		m.JSONError(w, err)
 		return
 	}
-	data, err := s.RequestContextData(r)
-	if err != nil {
-		m.JSONError(w, err)
-		return
-	}
 
-	result, err := handler.service.KitchenReceipt(req.KitchenReceipt, data)
+	result, err := handler.service.KitchenReceipt(r.Context(), req.KitchenReceipt)
 	if err != nil {
 		m.JSONError(w, err)
 		return
@@ -289,13 +277,8 @@ func (handler printRouter) printTableBill(w http.ResponseWriter, r *http.Request
 		m.JSONError(w, err)
 		return
 	}
-	data, err := s.RequestContextData(r)
-	if err != nil {
-		m.JSONError(w, err)
-		return
-	}
 
-	result, err := handler.service.TableBill(req.Bill, data)
+	result, err := handler.service.TableBill(r.Context(), req.Bill)
 	if err != nil {
 		m.JSONError(w, err)
 		return
@@ -378,13 +361,8 @@ func (handler printRouter) printPaymentReceipt(w http.ResponseWriter, r *http.Re
 		m.JSONError(w, err)
 		return
 	}
-	data, err := s.RequestContextData(r)
-	if err != nil {
-		m.JSONError(w, err)
-		return
-	}
 
-	result, err := handler.service.PaymentReceipt(req.PaymentReceipt, data)
+	result, err := handler.service.PaymentReceipt(r.Context(), req.PaymentReceipt)
 	if err != nil {
 		m.JSONError(w, err)
 		return
