@@ -175,7 +175,7 @@ func TestRouter_TableBill(t *testing.T) {
 				},
 				Reporter: httpexpect.NewAssertReporter(t),
 			})
-			e.GET("/table-bill").
+			e.POST("/table-bill").
 				WithText(tc.request).
 				Expect().
 				Status(tc.expectedCode).

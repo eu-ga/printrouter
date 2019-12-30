@@ -7,6 +7,7 @@ import (
 )
 
 // Bill is a collection of information that have to be printed in the bill
+// swagger:model
 type Bill struct {
 	Restaurant    RestaurantInfo  `json:"restaurant"`
 	OrderType     model.OrderType `json:"orderType"`

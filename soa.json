@@ -6,7 +6,7 @@
     },
     "serviceName": "print",
     "serviceGroup": "core",
-    "servicePort": 8080,
+    "servicePort": 4723,
     "swagger": true,
     "requestTimeout": 30,
     "requestTimeoutRenewal": 5,

@@ -53,7 +53,7 @@ func newPrintRouter(service printService) printRouter {
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
 
 	router.Path("/table-bill").
-		Methods(http.MethodGet).HandlerFunc(handler.printTableBill)
+		Methods(http.MethodPost).HandlerFunc(handler.printTableBill)
 
 	router.Path("/venue/{id}/pos-printers").
 		Methods(http.MethodGet).HandlerFunc(handler.printVenuePrinters)
@@ -255,7 +255,7 @@ func (r tableBillRequest) Validate() error {
 	return nil
 }
 
-// swagger:operation GET /print/table-bill Print printTableBill
+// swagger:operation POST /print/table-bill Print printTableBill
 // this endpoint returns a table's bill payload
 // ---
 //     Consumes:
@@ -270,6 +270,11 @@ func (r tableBillRequest) Validate() error {
 //       required: true
 //       type: string
 //       description: dinning party id
+//     - name: body
+//       in: body
+//       required: true
+//       schema:
+//         $ref: "#/definitions/Bill"
 //
 //     Responses:
 //       '200':
