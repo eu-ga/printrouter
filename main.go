@@ -24,16 +24,19 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 
-	"github.com/rockspoon/go-common/log"
-	"github.com/rockspoon/go-common/soajs"
+	log "github.com/rockspoon/rs.cor.common-log"
+	middleware "github.com/rockspoon/rs.cor.middleware/v2"
 	"github.com/rockspoon/rs.cor.printer-ms/controller"
 	"github.com/rockspoon/rs.cor.printer-ms/controller/integration"
 	"github.com/rockspoon/rs.cor.printer-ms/handler"
 )
 
 func main() {
+	middlewareHandler, reg, err := middleware.InitMiddleware("soa.json")
+	if err != nil {
+		log.Panicf("could not initialize SoaJS: %v", err)
+	}
 
 	// Integrations
 	deviceMS := integration.NewDeviceMS()
@@ -41,19 +44,10 @@ func main() {
 	// Services
 	service := controller.NewPrintController(deviceMS)
 
-	// Middlewares
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Panicf("could not get working directory: %v", err)
-	}
-	soajsMiddleware, soaConv, err := soajs.InitSoajs(wd + "/soa.json")
-	if err != nil {
-		log.Panicf("could not initialize SoaJS: %v", err)
-	}
-
-	// Router
-	router := handler.New(service, soajsMiddleware)
-
 	log.Info("profile service started")
-	log.Panic(http.ListenAndServe(fmt.Sprintf(":%d", soaConv.ServicePort), router))
+	log.Panic(
+		http.ListenAndServe(
+			fmt.Sprintf(":%d", reg.ServiceConfiguration.ServicePort),
+			handler.New(service, middlewareHandler),
+		))
 }

@@ -1,7 +1,7 @@
 package converter
 
 import (
-	"github.com/rockspoon/go-common/log"
+	log "github.com/rockspoon/rs.cor.common-log"
 	"github.com/rockspoon/rs.cor.printer-ms/command"
 )
 

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	m "github.com/rockspoon/go-common/middleware"
-	"github.com/rockspoon/go-common/util"
+	util "github.com/rockspoon/rs.cor.common-util"
+	m "github.com/rockspoon/rs.cor.middleware/v2"
 	"github.com/rockspoon/rs.cor.printer-ms/dependency"
 	e "github.com/rockspoon/rs.cor.printer-ms/errors"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
@@ -187,13 +187,13 @@ func (handler printRouter) printKitchenCard(w http.ResponseWriter, r *http.Reque
 	var req kitchenReceipt
 	err := m.ParseRequest(r, &req)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := handler.service.KitchenReceipt(r.Context(), req.KitchenReceipt)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	m.JSONReturn(w, http.StatusOK, result)
@@ -274,13 +274,13 @@ func (handler printRouter) printTableBill(w http.ResponseWriter, r *http.Request
 	var req tableBillRequest
 	err := m.ParseRequest(r, &req)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := handler.service.TableBill(r.Context(), req.Bill)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	m.JSONReturn(w, http.StatusOK, result)
@@ -358,13 +358,13 @@ func (handler printRouter) printPaymentReceipt(w http.ResponseWriter, r *http.Re
 	var req paymentReceiptRequest
 	err := m.ParseRequest(r, &req)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := handler.service.PaymentReceipt(r.Context(), req.PaymentReceipt)
 	if err != nil {
-		m.JSONError(w, err)
+		m.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 	m.JSONReturn(w, http.StatusOK, result)

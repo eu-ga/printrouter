@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	h "github.com/rockspoon/go-common/handler"
-	m "github.com/rockspoon/go-common/middleware"
+	m "github.com/rockspoon/rs.cor.middleware/v2"
+	h "github.com/rockspoon/rs.cor.middleware/v2/handler"
 	"github.com/rockspoon/rs.cor.printer-ms/dependency"
 )
 
