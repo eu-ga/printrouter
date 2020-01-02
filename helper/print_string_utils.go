@@ -26,7 +26,7 @@ func WarpString(str string, warpLength int) []string {
 	originalWords := strings.Split(str, " ")
 	formattedWords := []string{}
 	for i := range originalWords {
-		formattedWords = append(formattedWords, BreakLongWords(originalWords[i], warpLength)...)
+		formattedWords = append(formattedWords, BreakLongWords(originalWords[i], warpLength-1)...)
 	}
 
 	res := []string{""}
