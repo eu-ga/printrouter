@@ -40,8 +40,8 @@ func (c PrintController) KitchenReceipt(ctx context.Context, receipt model.Kitch
 
 	payload := model.Payload{
 		PrintPayload:    c.Converter.Convert(commands),
-		IPAddress:       printer.IPAddress,
-		PrinterModel:    printer.PrinterModel,
+		IPAddress:       printer.IP,
+		PrinterModel:    printer.Model,
 		DescribeMessage: "[Printing Job] Kitchen Receipt",
 	}
 	return &payload, nil
@@ -58,8 +58,8 @@ func (c PrintController) TableBill(ctx context.Context, bill model.Bill) (*model
 
 	payload := model.Payload{
 		PrintPayload:    c.Converter.Convert(commands),
-		IPAddress:       printer.IPAddress,
-		PrinterModel:    printer.PrinterModel,
+		IPAddress:       printer.IP,
+		PrinterModel:    printer.Model,
 		DescribeMessage: "[Printing Job] Table Bill",
 	}
 	return &payload, nil
@@ -76,8 +76,8 @@ func (c PrintController) PaymentReceipt(ctx context.Context, receipt model.Payme
 
 	payload := model.Payload{
 		PrintPayload:    c.Converter.Convert(commands),
-		IPAddress:       printer.IPAddress,
-		PrinterModel:    printer.PrinterModel,
+		IPAddress:       printer.IP,
+		PrinterModel:    printer.Model,
 		DescribeMessage: "[Printing Job] Payment Receipt",
 	}
 	return &payload, nil

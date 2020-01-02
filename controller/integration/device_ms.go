@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	request "github.com/rockspoon/rs.cor.common-request"
-	d "github.com/rockspoon/rs.cor.device-model/model"
 	m "github.com/rockspoon/rs.cor.middleware/v2"
 	mmodel "github.com/rockspoon/rs.cor.middleware/v2/model"
+	d "github.com/rockspoon/rs.cor.printer-ms/controller/integration/model"
 	"github.com/rockspoon/rs.cor.printer-ms/errors"
 )
 

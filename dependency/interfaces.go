@@ -3,7 +3,7 @@ package dependency
 import (
 	"context"
 
-	d "github.com/rockspoon/rs.cor.device-model/model"
+	d "github.com/rockspoon/rs.cor.printer-ms/controller/integration/model"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 )
 

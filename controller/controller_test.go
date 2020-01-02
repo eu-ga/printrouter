@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	orderModel "github.com/rockspoon/rs.com.order-model/model"
-	d "github.com/rockspoon/rs.cor.device-model/model"
+	d "github.com/rockspoon/rs.cor.printer-ms/controller/integration/model"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/mocks"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
@@ -35,7 +35,7 @@ func TestController_KitchenReceipt(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
+			printer: &d.Printer{IP: "123", Model: "TSPP"},
 			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Kitchen Receipt"},
 		},
 	}
@@ -78,7 +78,7 @@ func TestController_TableBill(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
+			printer: &d.Printer{IP: "123", Model: "TSPP"},
 			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Table Bill"},
 		},
 	}
@@ -127,7 +127,7 @@ func TestController_PaymentReceipt(t *testing.T) {
 		},
 		{
 			name:    "success",
-			printer: &d.Printer{IPAddress: "123", PrinterModel: "TSPP"},
+			printer: &d.Printer{IP: "123", Model: "TSPP"},
 			receipt: receipt,
 			payload: &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Payment Receipt"},
 		},

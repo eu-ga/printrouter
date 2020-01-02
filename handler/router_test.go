@@ -9,12 +9,12 @@ import (
 	"github.com/gavv/httpexpect"
 	"github.com/gorilla/mux"
 	util "github.com/rockspoon/rs.cor.common-util"
-	dmodel "github.com/rockspoon/rs.cor.device-model/model"
 	m "github.com/rockspoon/rs.cor.middleware/v2"
 	mmocks "github.com/rockspoon/rs.cor.middleware/v2/mocks"
 	mmodel "github.com/rockspoon/rs.cor.middleware/v2/model"
 	"github.com/rockspoon/rs.cor.printer-ms/controller"
 	"github.com/rockspoon/rs.cor.printer-ms/controller/integration"
+	dmodel "github.com/rockspoon/rs.cor.printer-ms/controller/integration/model"
 	"github.com/rockspoon/rs.cor.printer-ms/dependency"
 )
 
