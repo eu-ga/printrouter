@@ -18,8 +18,8 @@ import (
 
 func TestController_KitchenReceipt(t *testing.T) {
 	receipt := model.KitchenReceipt{}
-	cmdrs := kitchenTemplate.Generator{}.Generate(receipt, "TSPP")
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
+	cmdrs := kitchenTemplate.Generator{}.Generate(receipt)
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs)
 
 	tt := []struct {
 		name         string
@@ -60,8 +60,8 @@ func TestController_KitchenReceipt(t *testing.T) {
 
 func TestController_TableBill(t *testing.T) {
 	bill := model.Bill{}
-	cmdrs := billTemplate.Generator{}.Generate(bill, "TSPP")
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
+	cmdrs := billTemplate.Generator{}.Generate(bill)
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs)
 
 	tt := []struct {
 		name         string
@@ -109,8 +109,8 @@ func TestController_PaymentReceipt(t *testing.T) {
 			DineInOptions: &model.DineInOptions{},
 		},
 	}
-	cmdrs := receiptTemplate.Generator{}.Generate(receipt, "TSPP")
-	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs, "TSPP")
+	cmdrs := receiptTemplate.Generator{}.Generate(receipt)
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs)
 
 	tt := []struct {
 		name         string

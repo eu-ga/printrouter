@@ -36,10 +36,10 @@ func (c PrintController) KitchenReceipt(ctx context.Context, receipt model.Kitch
 		return nil, err
 	}
 
-	commands := c.KitchenReceiptGenerator.Generate(receipt, printer.PrinterModel)
+	commands := c.KitchenReceiptGenerator.Generate(receipt)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
+		PrintPayload:    c.Converter.Convert(commands),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Kitchen Receipt",
@@ -54,10 +54,10 @@ func (c PrintController) TableBill(ctx context.Context, bill model.Bill) (*model
 		return nil, err
 	}
 
-	commands := c.TableBillGenerator.Generate(bill, printer.PrinterModel)
+	commands := c.TableBillGenerator.Generate(bill)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
+		PrintPayload:    c.Converter.Convert(commands),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Table Bill",
@@ -72,10 +72,10 @@ func (c PrintController) PaymentReceipt(ctx context.Context, receipt model.Payme
 		return nil, err
 	}
 
-	commands := c.PaymentReceiptGenerator.Generate(receipt, printer.PrinterModel)
+	commands := c.PaymentReceiptGenerator.Generate(receipt)
 
 	payload := model.Payload{
-		PrintPayload:    c.Converter.Convert(commands, printer.PrinterModel),
+		PrintPayload:    c.Converter.Convert(commands),
 		IPAddress:       printer.IPAddress,
 		PrinterModel:    printer.PrinterModel,
 		DescribeMessage: "[Printing Job] Payment Receipt",

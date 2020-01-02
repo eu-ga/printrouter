@@ -156,7 +156,7 @@ func AddServiceInfoBill(attendantName string, orderType orderModel.OrderType, cr
 			command.Text("Seats: "+check.DineInOptions.Seats),
 			command.NewLine{},
 		)
-	} else {
+	} else if check.CustomerInfo != nil {
 		commands = append(commands,
 			command.Text("Customer: "+check.CustomerInfo.Name),
 			command.NewLine{},

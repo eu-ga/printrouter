@@ -9,11 +9,7 @@ import (
 // Generator Bill Receipt Generator
 type Generator struct{}
 
-// Generate generate bill command list according to printer type
-func (Generator) Generate(bill model.Bill, printerType string) []command.PrinterCommand {
-	var commands []command.PrinterCommand
-	if printerType == "TSP" {
-		commands = tsp.CheckGenerator{}.Generate(bill)
-	}
-	return commands
+// Generate generate bill command list
+func (Generator) Generate(bill model.Bill) []command.PrinterCommand {
+	return tsp.CheckGenerator{}.Generate(bill)
 }
