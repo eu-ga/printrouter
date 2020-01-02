@@ -12,7 +12,7 @@ type Generator struct{}
 // Generate generate receipt command list according to printer type
 func (Generator) Generate(kitchenReceipt model.KitchenReceipt, printerType string) []command.PrinterCommand {
 	var commands []command.PrinterCommand
-	if printerType == "TSPP" {
+	if printerType == "TSP" {
 		commands = tsp.KitchenReceiptGenerator{}.Generate(kitchenReceipt)
 	}
 	return commands

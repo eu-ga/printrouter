@@ -12,7 +12,7 @@ type Generator struct{}
 // Generate generate bill command list according to printer type
 func (Generator) Generate(bill model.Bill, printerType string) []command.PrinterCommand {
 	var commands []command.PrinterCommand
-	if printerType == "TSPP" {
+	if printerType == "TSP" {
 		commands = tsp.CheckGenerator{}.Generate(bill)
 	}
 	return commands
