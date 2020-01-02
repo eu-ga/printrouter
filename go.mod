@@ -22,7 +22,7 @@ require (
 	github.com/rockspoon/rs.cor.common-money v1.6.0
 	github.com/rockspoon/rs.cor.common-request v1.1.1
 	github.com/rockspoon/rs.cor.common-util v1.4.1
-	github.com/rockspoon/rs.cor.device-model v1.18.0
+	github.com/rockspoon/rs.cor.device-model v1.18.0 // indirect
 	github.com/rockspoon/rs.cor.middleware/v2 v2.6.2
 	github.com/rockspoon/rs.go-test-util v0.0.5
 	github.com/sergi/go-diff v1.1.0 // indirect

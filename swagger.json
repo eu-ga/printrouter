@@ -65,11 +65,13 @@
         "operationId": "printKitchenCard",
         "parameters": [
           {
-            "type": "string",
             "description": "kitchen order data",
             "name": "Receipt Request",
             "in": "body",
-            "required": true
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KitchenReceipt"
+            }
           }
         ],
         "responses": {
@@ -97,7 +99,6 @@
         "operationId": "printPaymentReceipt",
         "parameters": [
           {
-            "type": "json",
             "description": "receipt to be printed",
             "name": "Receipt Request",
             "in": "body",
@@ -403,6 +404,29 @@
       },
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
     },
+    "CardInfo": {
+      "description": "CardInfo is information about the card",
+      "type": "object",
+      "properties": {
+        "authorization": {
+          "type": "string",
+          "x-go-name": "Authorization"
+        },
+        "cardHolder": {
+          "type": "string",
+          "x-go-name": "Cardholder"
+        },
+        "number": {
+          "type": "string",
+          "x-go-name": "Number"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
     "Check": {
       "description": "Check to be printed",
       "type": "object",
@@ -450,6 +474,25 @@
         "phone": {
           "type": "string",
           "x-go-name": "Phone"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "DineInKitchenInfo": {
+      "description": "DineInKitchenInfo is the info to impress in the kitchen print",
+      "type": "object",
+      "properties": {
+        "runnerName": {
+          "type": "string",
+          "x-go-name": "RunnerName"
+        },
+        "sectionName": {
+          "type": "string",
+          "x-go-name": "SectionName"
+        },
+        "tables": {
+          "type": "string",
+          "x-go-name": "Tables"
         }
       },
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
@@ -503,6 +546,70 @@
       },
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
     },
+    "KitchenItem": {
+      "description": "KitchenItem ordered item printable model",
+      "type": "object",
+      "properties": {
+        "fireType": {
+          "$ref": "#/definitions/TypesOfFire"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Quantity"
+        },
+        "seats": {
+          "type": "string",
+          "x-go-name": "Seats"
+        },
+        "subEntries": {
+          "type": "string",
+          "x-go-name": "SubEntries"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Weight"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "KitchenReceipt": {
+      "description": "KitchenReceipt kitchen printable model",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "customerInfo": {
+          "$ref": "#/definitions/CustomerInfo"
+        },
+        "dinerInfo": {
+          "$ref": "#/definitions/DineInKitchenInfo"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KitchenItem"
+          },
+          "x-go-name": "Items"
+        },
+        "kitchen": {
+          "type": "string",
+          "x-go-name": "Kitchen"
+        },
+        "orderInfo": {
+          "$ref": "#/definitions/OrderType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
     "OrderType": {
       "type": "string",
       "title": "OrderType is the card type.",
@@ -527,6 +634,44 @@
         "printerModel": {
           "type": "string",
           "x-go-name": "PrinterModel"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "PaymentReceipt": {
+      "description": "PaymentReceipt is the receipt to be printed",
+      "type": "object",
+      "properties": {
+        "attendantName": {
+          "type": "string",
+          "x-go-name": "AttendantName"
+        },
+        "card": {
+          "$ref": "#/definitions/CardInfo"
+        },
+        "check": {
+          "$ref": "#/definitions/Check"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "orderType": {
+          "$ref": "#/definitions/OrderType"
+        },
+        "paid": {
+          "$ref": "#/definitions/SimpleMoney"
+        },
+        "paymentType": {
+          "type": "string",
+          "x-go-name": "PaymentType"
+        },
+        "restaurant": {
+          "$ref": "#/definitions/RestaurantInfo"
+        },
+        "tips": {
+          "$ref": "#/definitions/SimpleMoney"
         }
       },
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
@@ -596,6 +741,10 @@
       "items": {
         "$ref": "#/definitions/SubEntry"
       },
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
+    },
+    "TypesOfFire": {
+      "type": "string",
       "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/model"
     },
     "VenuePrinterPayload": {

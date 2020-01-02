@@ -174,8 +174,9 @@ func (r kitchenReceipt) Validate() error {
 //     - name: Receipt Request
 //       in: body
 //       required: true
-//       type: string
 //       description: kitchen order data
+//       schema:
+//         $ref: '#/definitions/KitchenReceipt'
 //
 //     Responses:
 //       '200':
@@ -238,7 +239,6 @@ func (r *tableBillRequest) Build(req *http.Request) error {
 	return nil
 }
 
-// Validate validates the create role JSONRequest.
 func (r tableBillRequest) Validate() error {
 	return nil
 }
@@ -343,7 +343,6 @@ func (r paymentReceiptRequest) Validate() error {
 //     - name: Receipt Request
 //       in: body
 //       required: true
-//       type: json
 //       description: receipt to be printed
 //       schema:
 //         $ref: '#/definitions/PaymentReceipt'

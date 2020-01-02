@@ -42,6 +42,7 @@ var (
 )
 
 // KitchenReceipt kitchen printable model
+// swagger:model
 type KitchenReceipt struct {
 	CreatedAt    time.Time          `json:"createdAt"`
 	DineInInfo   *DineInKitchenInfo `json:"dinerInfo,omitempty"`
@@ -52,6 +53,7 @@ type KitchenReceipt struct {
 }
 
 // KitchenItem ordered item printable model
+// swagger:model
 type KitchenItem struct {
 	Name       string      `json:"name"`
 	Quantity   int         `json:"quantity"`
@@ -62,6 +64,7 @@ type KitchenItem struct {
 }
 
 // DineInKitchenInfo is the info to impress in the kitchen print
+// swagger:model
 type DineInKitchenInfo struct {
 	SectionName string `json:"sectionName"`
 	Tables      string `json:"tables"`
