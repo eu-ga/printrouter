@@ -63,7 +63,7 @@ type KitchenItem struct {
 
 // DineInKitchenInfo is the info to impress in the kitchen print
 type DineInKitchenInfo struct {
-	SectionName string `json:"SectionName"`
-	Tables      string `json:"Tables"`
-	RunnerName  string `json:"RunnerName"`
+	SectionName string `json:"sectionName"`
+	Tables      string `json:"tables"`
+	RunnerName  string `json:"runnerName"`
 }
