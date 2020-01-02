@@ -44,14 +44,14 @@ func Test_printPaymentReceipt(t *testing.T) {
 		{
 			Name:         "empty body",
 			Path:         "/payment-invoice",
-			HTTPMethod:   http.MethodGet,
+			HTTPMethod:   http.MethodPost,
 			Req:          "1",
 			ExpectedCode: http.StatusBadRequest,
 		},
 		{
 			Name:       "service error",
 			Path:       "/payment-invoice",
-			HTTPMethod: http.MethodGet,
+			HTTPMethod: http.MethodPost,
 			Req: model.PaymentReceipt{
 				AttendantName: "test",
 			},
@@ -59,9 +59,9 @@ func Test_printPaymentReceipt(t *testing.T) {
 		},
 		{
 			RouteHandler: getDefaultPrinter,
-			Name:         "service error",
+			Name:         "ok",
 			Path:         "/payment-invoice",
-			HTTPMethod:   http.MethodGet,
+			HTTPMethod:   http.MethodPost,
 			Req: model.Bill{
 				AttendantName: "test",
 			},
@@ -76,14 +76,14 @@ func Test_printKitchenCard(t *testing.T) {
 		{
 			Name:         "empty body",
 			Path:         "/kitchen-card",
-			HTTPMethod:   http.MethodGet,
+			HTTPMethod:   http.MethodPost,
 			Req:          "1",
 			ExpectedCode: http.StatusBadRequest,
 		},
 		{
 			Name:       "service error",
 			Path:       "/kitchen-card",
-			HTTPMethod: http.MethodGet,
+			HTTPMethod: http.MethodPost,
 			Req: model.PaymentReceipt{
 				AttendantName: "test",
 			},
@@ -91,9 +91,9 @@ func Test_printKitchenCard(t *testing.T) {
 		},
 		{
 			RouteHandler: getDefaultPrinter,
-			Name:         "service error",
+			Name:         "ok",
 			Path:         "/kitchen-card",
-			HTTPMethod:   http.MethodGet,
+			HTTPMethod:   http.MethodPost,
 			Req: model.Bill{
 				AttendantName: "test",
 			},

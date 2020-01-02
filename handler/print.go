@@ -34,13 +34,13 @@ func newPrintRouter(service dependency.PrintService) printRouter {
 		Methods(http.MethodGet).HandlerFunc(handler.printSalesSummaryReport)
 
 	router.Path("/payment-invoice").
-		Methods(http.MethodGet).HandlerFunc(handler.printPaymentReceipt)
+		Methods(http.MethodPost).HandlerFunc(handler.printPaymentReceipt)
 
 	router.Path("/delivery-takeout/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printDeliveryTakeoutReceipt)
 
 	router.Path("/kitchen-card").
-		Methods(http.MethodGet).HandlerFunc(handler.printKitchenCard)
+		Methods(http.MethodPost).HandlerFunc(handler.printKitchenCard)
 
 	router.Path("/qsr/{id}/receipt").
 		Methods(http.MethodGet).HandlerFunc(handler.printQSRReceipt)
@@ -161,7 +161,7 @@ func (r kitchenReceipt) Validate() error {
 	return nil
 }
 
-// swagger:operation GET /print/kitchen-card Print printKitchenCard
+// swagger:operation POST /print/kitchen-card Print printKitchenCard
 // this endpoint returns a kitchen order ticket
 // ---
 //     Consumes:
@@ -330,7 +330,7 @@ func (r paymentReceiptRequest) Validate() error {
 	return nil
 }
 
-// swagger:operation GET /print/payment-invoice Print printPaymentReceipt
+// swagger:operation POST /print/payment-invoice Print printPaymentReceipt
 // this endpoint returns a payment receipt
 // ---
 //     Consumes:
