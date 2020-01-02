@@ -51,7 +51,7 @@
       }
     },
     "/print/kitchen-card": {
-      "get": {
+      "post": {
         "description": "this endpoint returns a kitchen order ticket",
         "consumes": [
           "application/json"
@@ -83,7 +83,7 @@
       }
     },
     "/print/payment-invoice": {
-      "get": {
+      "post": {
         "description": "this endpoint returns a payment receipt",
         "consumes": [
           "application/json"
@@ -372,7 +372,7 @@
           "x-go-name": "ZipCode"
         }
       },
-      "x-go-package": "github.com/rockspoon/rs.cor.common-model/address"
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/vendor/github.com/rockspoon/rs.cor.common-model/address"
     },
     "Bill": {
       "description": "Bill is a collection of information that have to be printed in the bill",
@@ -434,7 +434,7 @@
     },
     "CurrencySymbol": {
       "type": "string",
-      "x-go-package": "github.com/rockspoon/rs.cor.common-money"
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/vendor/github.com/rockspoon/rs.cor.common-money"
     },
     "CustomerInfo": {
       "description": "CustomerInfo is info about customere",
@@ -506,7 +506,7 @@
     "OrderType": {
       "type": "string",
       "title": "OrderType is the card type.",
-      "x-go-package": "github.com/rockspoon/rs.com.order-model/model"
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/vendor/github.com/rockspoon/rs.com.order-model/model"
     },
     "Payload": {
       "description": "Payload printer payload wrapper",
@@ -562,7 +562,7 @@
           "$ref": "#/definitions/CurrencySymbol"
         }
       },
-      "x-go-package": "github.com/rockspoon/rs.cor.common-money"
+      "x-go-package": "github.com/rockspoon/rs.cor.printer-ms/vendor/github.com/rockspoon/rs.cor.common-money"
     },
     "SubEntry": {
       "description": "SubEntry is description of an item",
