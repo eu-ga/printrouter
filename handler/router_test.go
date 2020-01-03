@@ -52,7 +52,6 @@ func getDefaultPrinter(sr *SetupResult) map[string]func(http.ResponseWriter, *ht
 	}
 }
 
-// nolint
 func (th testHandler) createHTTPExpect(t *testing.T, mw mmodel.Middleware) *httpexpect.Expect {
 	service := controller.NewPrintController(th.deviceMS)
 

@@ -149,10 +149,6 @@ github.com/rockspoon/rs.cor.common-request v1.1.1/go.mod h1:jYQ/h1+2EHXnWui7mUqB
 github.com/rockspoon/rs.cor.common-util v1.2.0/go.mod h1:0DIBkw5zBWmAIxA4NR1TuZw3pnNbuAwUTHOujNALF0I=
 github.com/rockspoon/rs.cor.common-util v1.4.1 h1:kM8mXbkgHmku+ctePGYZ38jRg0n0ZCnwjnCdyTXSqNg=
 github.com/rockspoon/rs.cor.common-util v1.4.1/go.mod h1:9oRUrh2lpVVHaxSuvRZIPtN8a9F+DeXFxy46GwmqLww=
-github.com/rockspoon/rs.cor.device-model v1.16.0 h1:8i9Kc5ZWH8WUg8XMO8DgNLrCFFesYm++lnYtEh6grIw=
-github.com/rockspoon/rs.cor.device-model v1.16.0/go.mod h1:jQZzSY/GOZHpLoafWzix6PguCyn6rJTpms+HVlHPXTQ=
-github.com/rockspoon/rs.cor.device-model v1.18.0 h1:3GTft/czF87TydEbFx2Eq/9yeBnFa+/YQcjwPQIgK00=
-github.com/rockspoon/rs.cor.device-model v1.18.0/go.mod h1:nwH+HGbZTxAV1s9Ef+THw1/pIwB8WCQvoZ7kYWnWQjg=
 github.com/rockspoon/rs.cor.middleware v1.7.3 h1:c4mzW+LjIdF7UoU+LnuSTgIRwed7K+l9NwYLpnMk3Vw=
 github.com/rockspoon/rs.cor.middleware v1.7.3/go.mod h1:CAUz1zZErXHAnUKHGzehaT15aC9lB0ZbzfNg89w7WyU=
 github.com/rockspoon/rs.cor.middleware/v2 v2.3.2/go.mod h1:svcuUQzAhZ8OBasRKR2SvDiFHqoaQqoVKMEdEN4m41w=
