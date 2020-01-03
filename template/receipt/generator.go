@@ -9,11 +9,7 @@ import (
 // Generator Receipt Generator
 type Generator struct{}
 
-// Generate generate receipt command list according to printer type
-func (Generator) Generate(receipt model.PaymentReceipt, printerType string) []command.PrinterCommand {
-	var commands []command.PrinterCommand
-	if printerType == "TSPP" {
-		commands = tsp.PaymentReceiptGenerator{}.Generate(receipt)
-	}
-	return commands
+// Generate generate receipt command list
+func (Generator) Generate(receipt model.PaymentReceipt) []command.PrinterCommand {
+	return tsp.PaymentReceiptGenerator{}.Generate(receipt)
 }

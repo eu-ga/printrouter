@@ -1,2 +1,3 @@
 coverage.out
 .vscode/
+*.DS_Store
