@@ -80,3 +80,26 @@ func (_m *PrintService) TableBill(ctx context.Context, request model.Bill) (*mod
 
 	return r0, r1
 }
+
+// TestPayload provides a mock function with given fields: ctx, ipAddress, printerModel
+func (_m *PrintService) TestPayload(ctx context.Context, ipAddress string, printerModel string) (*model.Payload, error) {
+	ret := _m.Called(ctx, ipAddress, printerModel)
+
+	var r0 *model.Payload
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *model.Payload); ok {
+		r0 = rf(ctx, ipAddress, printerModel)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Payload)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, ipAddress, printerModel)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

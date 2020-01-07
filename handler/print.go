@@ -28,7 +28,7 @@ func newPrintRouter(service dependency.PrintService) printRouter {
 	}
 
 	router.Path("/test").
-		Methods(http.MethodGet).HandlerFunc(handler.printTest)
+		Methods(http.MethodPost).HandlerFunc(handler.printTest)
 
 	router.Path("/sales-summary-report").
 		Methods(http.MethodGet).HandlerFunc(handler.printSalesSummaryReport)
@@ -54,7 +54,27 @@ func newPrintRouter(service dependency.PrintService) printRouter {
 	return handler
 }
 
-// swagger:operation GET /print/test Print printTest
+// nolint
+type testBody struct {
+	model.TestBody
+}
+
+// Build builds the create role JSONRequest.
+func (r *testBody) Build(req *http.Request) error {
+	err := json.NewDecoder(req.Body).Decode(r)
+	defer util.CloseOrLog(req.Body)
+	if err != nil && err != io.EOF {
+		return e.DecodeBody(err)
+	}
+	return nil
+}
+
+// Validate validates the create role JSONRequest.
+func (r testBody) Validate() error {
+	return nil
+}
+
+// swagger:operation POST /print/test Print printTest
 // this endpoint returns a test payload
 // ---
 //     Consumes:
@@ -74,6 +94,12 @@ func newPrintRouter(service dependency.PrintService) printRouter {
 //       required: true
 //       type: boolean
 //       description: flag for first time setup
+//     - name: Test Request
+//       in: body
+//       required: true
+//       description: test ordinary data
+//       schema:
+//         $ref: '#/definitions/TestBody'
 //
 //     Responses:
 //       '200':
@@ -82,7 +108,19 @@ func newPrintRouter(service dependency.PrintService) printRouter {
 //           $ref: "#/definitions/Payload"
 //
 func (handler printRouter) printTest(w http.ResponseWriter, r *http.Request) {
-	m.JSONReturn(w, http.StatusOK, model.Payload{})
+	var req testBody
+	err := m.ParseRequest(r, &req)
+	if err != nil {
+		m.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	result, err := handler.service.TestPayload(r.Context(), req.IPAddress, req.PrintModel)
+	if err != nil {
+		m.JSONError(w, err, http.StatusInternalServerError)
+		return
+	}
+	m.JSONReturn(w, http.StatusOK, result)
 }
 
 // swagger:operation GET /print/sales-summary-report Print printSalesSummaryReport

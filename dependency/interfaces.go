@@ -17,4 +17,5 @@ type PrintService interface {
 	KitchenReceipt(ctx context.Context, request model.KitchenReceipt) (*model.Payload, error)
 	TableBill(ctx context.Context, request model.Bill) (*model.Payload, error)
 	PaymentReceipt(ctx context.Context, request model.PaymentReceipt) (*model.Payload, error)
+	TestPayload(ctx context.Context, ipAddress, printerModel string) (*model.Payload, error)
 }

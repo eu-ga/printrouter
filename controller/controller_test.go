@@ -6,13 +6,16 @@ import (
 	"testing"
 
 	orderModel "github.com/rockspoon/rs.com.order-model/model"
+	"github.com/rockspoon/rs.cor.common-model/address"
 	d "github.com/rockspoon/rs.cor.printer-ms/controller/integration/model"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
+	ec "github.com/rockspoon/rs.cor.printer-ms/errors"
 	"github.com/rockspoon/rs.cor.printer-ms/mocks"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	billTemplate "github.com/rockspoon/rs.cor.printer-ms/template/bill"
 	kitchenTemplate "github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
 	receiptTemplate "github.com/rockspoon/rs.cor.printer-ms/template/receipt"
+	testTemplate "github.com/rockspoon/rs.cor.printer-ms/template/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -147,6 +150,66 @@ func TestController_PaymentReceipt(t *testing.T) {
 				require.Equal(t, tc.payload, payload)
 			} else {
 				require.EqualError(t, err, tc.expErr)
+			}
+		})
+	}
+}
+
+func TestController_TestPayload(t *testing.T) {
+	test := model.TestPayload{
+		Restaurant: model.RestaurantInfo{
+			Name: "Alvorada",
+			Address: address.Address{
+				Name:     "Restaurante Alvorada",
+				City:     "São Paulo",
+				State:    "SP",
+				Country:  "Brasil",
+				Address1: "Rua Alvorada, 154",
+				Region:   "Vila Olímpia",
+				ZipCode:  "05593010",
+			},
+		},
+	}
+	cmdrs := testTemplate.Generator{}.Generate(test)
+	strCmdrs := converter.ByteCodeGenerator{}.Convert(cmdrs)
+
+	tt := []struct {
+		name         string
+		test         model.TestPayload
+		payload      *model.Payload
+		ipAddress    string
+		printerModel string
+		expErr       error
+	}{
+		{
+			name:   "missing ip address",
+			expErr: ec.InvalidIPAddress(),
+		},
+		{
+			name:      "missing printer model",
+			ipAddress: "123",
+			expErr:    ec.InvalidPrinterModel(),
+		},
+		{
+			name:         "success",
+			test:         test,
+			ipAddress:    "123",
+			printerModel: "TSPP",
+			payload:      &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Test"},
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			controller := NewPrintController(nil)
+			ctx := context.Background()
+
+			payload, err := controller.TestPayload(ctx, tc.ipAddress, tc.printerModel)
+			if tc.name == "success" {
+				require.NoError(t, err)
+				require.Equal(t, tc.payload, payload)
+			} else {
+				require.Equal(t, err, tc.expErr)
 			}
 		})
 	}

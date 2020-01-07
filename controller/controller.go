@@ -3,12 +3,15 @@ package controller
 import (
 	"context"
 
+	"github.com/rockspoon/rs.cor.common-model/address"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
 	"github.com/rockspoon/rs.cor.printer-ms/dependency"
+	"github.com/rockspoon/rs.cor.printer-ms/errors"
 	"github.com/rockspoon/rs.cor.printer-ms/model"
 	billTemplate "github.com/rockspoon/rs.cor.printer-ms/template/bill"
 	kitchenTemplate "github.com/rockspoon/rs.cor.printer-ms/template/kitchen"
 	receiptTemplate "github.com/rockspoon/rs.cor.printer-ms/template/receipt"
+	testTemplate "github.com/rockspoon/rs.cor.printer-ms/template/test"
 )
 
 // PrintController Print functions
@@ -16,6 +19,7 @@ type PrintController struct {
 	KitchenReceiptGenerator kitchenTemplate.Generator
 	TableBillGenerator      billTemplate.Generator
 	PaymentReceiptGenerator receiptTemplate.Generator
+	TestGenerator           testTemplate.Generator
 	Converter               converter.ByteCodeGenerator
 	DeviceMS                dependency.DeviceMS
 }
@@ -24,6 +28,7 @@ type PrintController struct {
 func NewPrintController(deviceMS dependency.DeviceMS) PrintController {
 	return PrintController{
 		KitchenReceiptGenerator: kitchenTemplate.Generator{},
+		TestGenerator:           testTemplate.Generator{},
 		Converter:               converter.NewByteCodeGenerator(),
 		DeviceMS:                deviceMS,
 	}
@@ -79,6 +84,42 @@ func (c PrintController) PaymentReceipt(ctx context.Context, receipt model.Payme
 		IPAddress:       printer.IP,
 		PrinterModel:    printer.Model,
 		DescribeMessage: "[Printing Job] Payment Receipt",
+	}
+	return &payload, nil
+}
+
+// TestPayload prints a test payload
+func (c PrintController) TestPayload(ctx context.Context, ipAddress, printerModel string) (*model.Payload, error) {
+	test := model.TestPayload{
+		Restaurant: model.RestaurantInfo{
+			Name: "Alvorada",
+			Address: address.Address{
+				Name:     "Restaurante Alvorada",
+				City:     "São Paulo",
+				State:    "SP",
+				Country:  "Brasil",
+				Address1: "Rua Alvorada, 154",
+				Region:   "Vila Olímpia",
+				ZipCode:  "05593010",
+			},
+		},
+	}
+
+	if ipAddress == "" {
+		return nil, errors.InvalidIPAddress()
+	}
+
+	if printerModel == "" {
+		return nil, errors.InvalidPrinterModel()
+	}
+
+	commands := c.TestGenerator.Generate(test)
+
+	payload := model.Payload{
+		PrintPayload:    c.Converter.Convert(commands),
+		IPAddress:       ipAddress,
+		PrinterModel:    printerModel,
+		DescribeMessage: "[Printing Job] Test",
 	}
 	return &payload, nil
 }
