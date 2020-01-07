@@ -120,7 +120,7 @@ func Test_printTestPayload(t *testing.T) {
 			ExpectedCode: http.StatusInternalServerError,
 		},
 		{
-			Name:       "no print model",
+			Name:       "ip address not valid",
 			Path:       "/test",
 			HTTPMethod: http.MethodPost,
 			Req: model.TestBody{
@@ -129,11 +129,20 @@ func Test_printTestPayload(t *testing.T) {
 			ExpectedCode: http.StatusInternalServerError,
 		},
 		{
+			Name:       "no print model",
+			Path:       "/test",
+			HTTPMethod: http.MethodPost,
+			Req: model.TestBody{
+				IPAddress: "192.168.0.1",
+			},
+			ExpectedCode: http.StatusInternalServerError,
+		},
+		{
 			Name:       "success",
 			Path:       "/test",
 			HTTPMethod: http.MethodPost,
 			Req: model.TestBody{
-				IPAddress:  "123",
+				IPAddress:  "192.168.0.1",
 				PrintModel: "ABC",
 			},
 			ExpectedCode: http.StatusOK,

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"strconv"
+	"strings"
 
 	"github.com/rockspoon/rs.cor.common-model/address"
 	"github.com/rockspoon/rs.cor.printer-ms/converter"
@@ -105,7 +107,7 @@ func (c PrintController) TestPayload(ctx context.Context, ipAddress, printerMode
 		},
 	}
 
-	if ipAddress == "" {
+	if ipAddress == "" || !isIpv4(ipAddress) {
 		return nil, errors.InvalidIPAddress()
 	}
 
@@ -122,4 +124,24 @@ func (c PrintController) TestPayload(ctx context.Context, ipAddress, printerMode
 		DescribeMessage: "[Printing Job] Test",
 	}
 	return &payload, nil
+}
+
+func isIpv4(host string) bool {
+	parts := strings.Split(host, ".")
+
+	if len(parts) < 4 {
+		return false
+	}
+
+	for _, x := range parts {
+		if i, err := strconv.Atoi(x); err == nil {
+			if i < 0 || i > 255 {
+				return false
+			}
+		} else {
+			return false
+		}
+
+	}
+	return true
 }

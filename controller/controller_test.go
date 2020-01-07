@@ -186,16 +186,21 @@ func TestController_TestPayload(t *testing.T) {
 			expErr: ec.InvalidIPAddress(),
 		},
 		{
-			name:      "missing printer model",
+			name:      "not valid ip address",
+			expErr:    ec.InvalidIPAddress(),
 			ipAddress: "123",
+		},
+		{
+			name:      "missing printer model",
+			ipAddress: "192.168.0.1",
 			expErr:    ec.InvalidPrinterModel(),
 		},
 		{
 			name:         "success",
 			test:         test,
-			ipAddress:    "123",
+			ipAddress:    "192.168.0.1",
 			printerModel: "TSPP",
-			payload:      &model.Payload{IPAddress: "123", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Test"},
+			payload:      &model.Payload{IPAddress: "192.168.0.1", PrinterModel: "TSPP", PrintPayload: strCmdrs, DescribeMessage: "[Printing Job] Test"},
 		},
 	}
 
