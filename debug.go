@@ -1,5 +1,4 @@
-//package debug provides functionality for printing all routes
-package debug
+package printrouter
 
 import (
 	"fmt"
@@ -8,10 +7,13 @@ import (
 	"runtime"
 )
 
-const MODE = "debug"
+var mode = "debug"
 
 func debugPrint(format string, values ...interface{}) {
-	fmt.Printf("[debug] "+format, values...)
+	switch mode {
+	case "debug":
+		fmt.Printf("["+mode+"] "+format, values...)
+	}
 }
 
 func joinPaths(absolutePath, relativePath string) string {
@@ -34,8 +36,8 @@ func lastChar(str string) uint8 {
 	return str[len(str)-1]
 }
 
-func calculateAbsolutePath(relativePath string) string {
-	return joinPaths("/", relativePath)
+func calculateAbsolutePath(prefix, relativePath string) string {
+	return joinPaths(prefix, relativePath)
 }
 
 func nameOfFunction(f interface{}) string {
