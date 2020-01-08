@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
 var format = "%-6s %-25s --> %s (%d handlers)\n"
 
 //SetFormat sets format of the printed string
@@ -23,7 +24,6 @@ func NewRouter(r *mux.Router) *Router {
 }
 
 func (r *Router) Path(tpl string) *Route {
-	fmt.Println("Route path: ", tpl)
 	var route = &Route{
 		no: 1,
 	}
