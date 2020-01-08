@@ -230,7 +230,7 @@
       }
     },
     "/print/test": {
-      "get": {
+      "post": {
         "description": "this endpoint returns a test payload",
         "consumes": [
           "application/json"
