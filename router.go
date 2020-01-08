@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/mux"
 )
-
 var format = "%-6s %-25s --> %s (%d handlers)\n"
 
 //SetFormat sets format of the printed string
