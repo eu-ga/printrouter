@@ -1,7 +1,6 @@
 package debug
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
