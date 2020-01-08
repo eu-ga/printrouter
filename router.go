@@ -46,7 +46,8 @@ type Route struct {
 
 func (r *Route) Methods(methods ...string) *Route {
 	r.methods = append(r.methods, methods...)
-	return r.Methods(methods...)
+	r.Route = r.Route.Methods(methods...)
+	return r
 }
 
 func (r *Route) HandlerFunc(f func(http.ResponseWriter, *http.Request)) *mux.Route {
