@@ -13,6 +13,8 @@ const (
 	validationError             = 3
 	decodeBody                  = 4
 	invalidMicroserviceResponse = 5
+	invalidIPAddress            = 6
+	invalidPrinterModel         = 7
 )
 
 // DecodeBody returns decode body error by calling the middleware.
@@ -38,4 +40,14 @@ func InvalidMiddlewareContext() error {
 // InvalidMicroserviceResponse returns an error when a microservice responds with error.
 func InvalidMicroserviceResponse(msName, status string) error {
 	return e.NewError(errorPrefix, invalidMicroserviceResponse, fmt.Errorf("microservice "+msName+" responded with "+status))
+}
+
+// InvalidIPAddress invalid ip address value
+func InvalidIPAddress() error {
+	return e.NewError(errorPrefix, invalidIPAddress, fmt.Errorf("invalid ip address value"))
+}
+
+// InvalidPrinterModel invalid ip address value
+func InvalidPrinterModel() error {
+	return e.NewError(errorPrefix, invalidPrinterModel, fmt.Errorf("invalid printer model value"))
 }

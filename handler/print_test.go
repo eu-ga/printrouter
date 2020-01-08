@@ -102,3 +102,51 @@ func Test_printKitchenCard(t *testing.T) {
 	}
 	ExecHandlerTest(tt, t)
 }
+
+func Test_printTestPayload(t *testing.T) {
+	tt := []BaseHandlerTest{
+		{
+			Name:         "empty body",
+			Path:         "/test",
+			HTTPMethod:   http.MethodPost,
+			Req:          "1",
+			ExpectedCode: http.StatusBadRequest,
+		},
+		{
+			Name:         "no ip address",
+			Path:         "/test",
+			HTTPMethod:   http.MethodPost,
+			Req:          model.TestBody{},
+			ExpectedCode: http.StatusInternalServerError,
+		},
+		{
+			Name:       "ip address not valid",
+			Path:       "/test",
+			HTTPMethod: http.MethodPost,
+			Req: model.TestBody{
+				IPAddress: "123",
+			},
+			ExpectedCode: http.StatusInternalServerError,
+		},
+		{
+			Name:       "no print model",
+			Path:       "/test",
+			HTTPMethod: http.MethodPost,
+			Req: model.TestBody{
+				IPAddress: "192.168.0.1",
+			},
+			ExpectedCode: http.StatusInternalServerError,
+		},
+		{
+			Name:       "success",
+			Path:       "/test",
+			HTTPMethod: http.MethodPost,
+			Req: model.TestBody{
+				IPAddress:  "192.168.0.1",
+				PrintModel: "ABC",
+			},
+			ExpectedCode: http.StatusOK,
+		},
+	}
+	ExecHandlerTest(tt, t)
+}
